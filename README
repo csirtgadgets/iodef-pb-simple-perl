@@ -1,0 +1,38 @@
+Iodef-Pb-Simple
+===============
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+   Iodef::Pb
+
+SEE ALSO
+
+   http://github.com/collectiveintel/iodef-pb-simple-perl
+   http://github.com/collectiveintel/iodef-pb-perl
+   https://github.com/collectiveintel/IODEF
+   http://tools.ietf.org/html/rfc5070#section-3.2
+   http://search.cpan.org/~gariev/Google-ProtocolBuffers/lib/Google/ProtocolBuffers.pm
+   http://code.google.com/p/protobuf/
+   http://search.cpan.org/~kasei/Class-Accessor/lib/Class/Accessor.pm
+   http://collectiveintel.net
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2012 by Wes Young <claimid.com/wesyoung>
+Copyright (C) 2012 by the REN-ISAC <ren-isac.net>
+Copyright (C) 2012 by the Trustee's of Indiana University <iu.edu>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.10.1 or,
+at your option, any later version of Perl 5 you may have available.
