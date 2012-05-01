@@ -1,4 +1,4 @@
-package Iodef::Pb::Simple::Plugin::Fqdn;
+package Iodef::Pb::Simple::Plugin::Domain;
 use base 'Iodef::Pb::Simple::Plugin';
 
 use strict;
@@ -13,8 +13,9 @@ sub process {
     
     my $addr = $data->{'address'};
     return unless($addr);
-    return if($addr =~ /^$RE{'URI'}{'HTTP'}$/);
-    return if($addr =~ /^$RE{'URI'}{'HTTP'}{-scheme => 'https'}$/);
+    
+    # Regexp::Common qw/URI/ chokes on large urls
+    return if($addr =~ /^(ftp|https?):\/\//);
     return unless($addr =~ /^[a-zA-Z0-9.\-_]+\.[a-z]{2,6}$/);
     
     my $category = AddressType::AddressCategory::Address_category_ext_value();
@@ -35,7 +36,7 @@ sub process {
                 Node    => NodeType->new({
                     Address => AddressType->new({
                         category        => $category,
-                        ext_category    => 'fqdn',
+                        ext_category    => 'domain',
                         content         => $addr,
                     }),
                 }),
