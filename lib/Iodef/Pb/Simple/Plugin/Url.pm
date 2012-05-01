@@ -4,7 +4,6 @@ use base 'Iodef::Pb::Simple::Plugin';
 use strict;
 use warnings;
 
-use Regexp::Common qw /URI/;
 use URI::Escape;
 use Digest::SHA1 qw/sha1_hex/;
 use Digest::MD5 qw/md5_hex/;
@@ -16,7 +15,7 @@ sub process {
     
     my $addr = $data->{'address'};
     return unless($addr);
-    return unless($addr =~ /^$RE{'URI'}/ || $addr =~ /^$RE{'URI'}{'HTTP'}{-scheme => 'https'}/);
+    return unless($addr =~ /^(ftp|https?):\/\//);
     
     $addr = lc($addr);
     $addr =~ s/\/$//;
@@ -51,6 +50,7 @@ sub process {
                     }),
                 }),
                 AdditionalData  => \@additional_data,
+                category        => SystemType::SystemCategory::System_category_target(),
             }),
         }),
     });

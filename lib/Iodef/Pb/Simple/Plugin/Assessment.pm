@@ -69,7 +69,7 @@ sub process {
         }
     
         $assessment = AssessmentType->new({
-            Impact      => $impact,
+            Impact      => [$impact],
             Confidence  => $confidence,
         });
     }
