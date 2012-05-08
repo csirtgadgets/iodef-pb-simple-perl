@@ -12,7 +12,7 @@ sub process {
     return unless($data->{'guid'});
     
     my $ad = ExtensionType->new({
-        dtype   => 'string',
+        dtype   => ExtensionType::DtypeType::dtype_type_string(),
         content => $data->{'guid'},
         meaning => 'guid'
     });
