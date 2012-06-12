@@ -12,25 +12,8 @@ sub process {
     my $restriction = $data->{'restriction'} || 'private';
     
     unless(ref($restriction) eq 'RestrictionType'){
-        for(lc($restriction)){
-            if(/^private$/){
-                $restriction = RestrictionType::restriction_type_private(),
-                last;
-            }
-            if(/^public$/){
-                $restriction = RestrictionType::restriction_type_public(),
-                last;
-            }
-            if(/^need-to-know$/){
-                $restriction = RestrictionType::restriction_type_need_to_know(),
-                last;
-            }
-            if(/^default$/){
-                $restriction = RestrictionType::restriction_type_default(),
-                last;
-            }   
-        }   
-    }    
+        $restriction = $self->restriction_normalize($restriction);
+    }
     my $incident = @{$iodef->get_Incident()}[0];  
     $incident->set_restriction($restriction);
 }

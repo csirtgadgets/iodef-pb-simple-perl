@@ -33,4 +33,31 @@ sub normalize_timestamp {
     return $dt;
 }
 
+sub restriction_normalize {
+    my $self            = shift;
+    my $restriction     = shift;
+    
+    return $restriction if($restriction =~ /^[1-4]$/);
+    for(lc($restriction)){
+        if(/^private$/){
+            $restriction = RestrictionType::restriction_type_private(),
+            last;
+        }
+        if(/^public$/){
+            $restriction = RestrictionType::restriction_type_public(),
+            last;
+        }
+        if(/^need-to-know$/){
+            $restriction = RestrictionType::restriction_type_need_to_know(),
+            last;
+        }
+        if(/^default$/){
+            $restriction = RestrictionType::restriction_type_default(),
+            last;
+        }   
+    }
+    return $restriction;
+}
+    
+
 1;
