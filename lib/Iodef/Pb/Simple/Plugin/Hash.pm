@@ -1,4 +1,4 @@
-package Iodef::Pb::Simple::Plugin::Sha1;
+package Iodef::Pb::Simple::Plugin::Hash;
 use base 'Iodef::Pb::Simple::Plugin';
 
 use strict;
@@ -9,13 +9,10 @@ sub process {
     my $data = shift;
     my $iodef = shift;
     
-    return unless($data->{'sha1'});
-    my $sha1 = lc($data->{'sha1'});
-    return unless($sha1 =~ /^[a-f0-9]{40}$/);
-    
+    return unless($data->{'hash'});    
     my $hash = ExtensionType->new({
-        meaning     => 'sha1',
-        content     => $sha1,
+        meaning     => 'hash',
+        content     => $data->{'hash'},
         dtype       => ExtensionType::DtypeType::dtype_type_string(),
     });
     
