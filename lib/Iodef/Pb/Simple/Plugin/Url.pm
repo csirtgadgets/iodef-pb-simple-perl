@@ -7,6 +7,7 @@ use warnings;
 use URI::Escape;
 use Digest::SHA1 qw/sha1_hex/;
 use Digest::MD5 qw/md5_hex/;
+use Encode qw(encode_utf8);
 
 sub process {
     my $self = shift;
@@ -20,6 +21,8 @@ sub process {
     $addr = lc($addr);
     $addr =~ s/\/$//;
     my $safe = uri_escape($addr,'\x00-\x1f\x7f-\xff');
+    $safe = encode_utf8($addr);
+    warn $safe;
     $addr = $safe;
     $data->{'address'} = $safe;
     $data->{'md5'} = md5_hex($safe) unless($data->{'md5'});
