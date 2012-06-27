@@ -22,8 +22,8 @@ sub process {
     $addr =~ s/\/$//;
     my $safe = uri_escape($addr,'\x00-\x1f\x7f-\xff');
     $safe = encode_utf8($addr);
-    warn $safe;
     $addr = $safe;
+  
     $data->{'address'} = $safe;
     $data->{'md5'} = md5_hex($safe) unless($data->{'md5'});
     $data->{'sha1'} = sha1_hex($safe) unless($data->{'sha1'});
