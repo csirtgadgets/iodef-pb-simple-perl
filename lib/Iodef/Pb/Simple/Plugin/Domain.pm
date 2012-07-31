@@ -21,28 +21,32 @@ sub process {
     my $category = AddressType::AddressCategory::Address_category_ext_value();
     
     my @additional_data ;
+    
+    
+    my $system = SystemType->new({
+        Node    => NodeType->new({
+            Address => AddressType->new({
+                category        => $category,
+                ext_category    => 'fqdn',
+                content         => $addr,
+            }),
+        }),
+        category        => SystemType::SystemCategory::System_category_infrastructure(),
+    });
+    
     if($data->{'rdata'}){
-        my $r = ExtensionType->new({
-            dtype   => ExtensionType::DtypeType::dtype_type_string(),
-            meaning => 'rdata',
-            content => $data->{'rdata'},
-        });
-        push(@additional_data,$r);
+        $system->set_AdditionalData(
+            ExtensionType->new({
+                dtype   => ExtensionType::DtypeType::dtype_type_string(),
+                meaning => 'rdata',
+                content => $data->{'rdata'},
+            })
+        );
     }
     
     my $event = EventDataType->new({
         Flow    => FlowType->new({
-            System  => SystemType->new({
-                Node    => NodeType->new({
-                    Address => AddressType->new({
-                        category        => $category,
-                        ext_category    => 'domain',
-                        content         => $addr,
-                    }),
-                }),
-                AdditionalData  => \@additional_data,
-                category        => SystemType::SystemCategory::System_category_infrastructure(),
-            }),
+            System  => $system,
         }),
     });
     

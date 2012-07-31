@@ -12,7 +12,7 @@ sub process {
     my $altid = $data->{'RelatedActivity'} || $data->{'relatedid'};
     return unless($altid);
     
-    unless(ref($altid) eq 'RelatedActivityType'){
+    unless(ref($altid) eq 'RelatedActivityType' || ref($altid) eq 'ARRAY'){
         $altid = IncidentIDType->new({
             content     => $altid,
             instance    => '',

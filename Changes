@@ -1,5 +1,9 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
+0.03    2012-07-30
+    - bugfixes
+    - added malware module
+
 0.02    2012-06-27
     - bugfixes
 

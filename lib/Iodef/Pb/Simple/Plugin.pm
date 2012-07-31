@@ -37,6 +37,7 @@ sub restriction_normalize {
     my $self            = shift;
     my $restriction     = shift;
     
+    return unless($restriction);
     return $restriction if($restriction =~ /^[1-4]$/);
     for(lc($restriction)){
         if(/^private$/){

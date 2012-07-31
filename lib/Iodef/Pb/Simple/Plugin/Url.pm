@@ -31,14 +31,16 @@ sub process {
     my @additional_data;
     push(@additional_data,(
         ExtensionType->new({
-            dtype   => ExtensionType::DtypeType::dtype_type_string(),
-            meaning => 'md5',
-            content => $data->{'md5'},
+            dtype       => ExtensionType::DtypeType::dtype_type_string(),
+            meaning     => 'url hash',
+            formatid    => 'md5',
+            content     => $data->{'md5'},
         }),
         ExtensionType->new({
-            dtype   => ExtensionType::DtypeType::dtype_type_string(),
-            meaning => 'sha1',
-            content => $data->{'sha1'},
+            dtype       => ExtensionType::DtypeType::dtype_type_string(),
+            meaning     => 'url hash',
+            formatid    => 'md5',
+            content     => $data->{'sha1'},
         })
     ));
     
