@@ -17,6 +17,7 @@ my $x = Iodef::Pb::Simple->new({
     assessment  => 'botnet',
     confidence  => '50',
     restriction     => 'private',
+    method          => 'http://www.virustotal.com/analisis/02da4d701931b1b00703419a34313d41938e5bd22d336186e65ea1b8a6bfbf1d-1280410372',
 });
 
 my $str = $x->encode();
