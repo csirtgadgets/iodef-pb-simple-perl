@@ -6,6 +6,9 @@ use warnings;
 
 require Exporter;
 
+our $VERSION = '0.05';
+$VERSION = eval $VERSION;  # see L<perlmodstyle>
+
 our @ISA = qw(Exporter);
 
 # Items to export into callers namespace by default. Note: do not export
@@ -24,9 +27,6 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(
 	
 );
-
-our $VERSION = '0.04';
-$VERSION = eval $VERSION;  # see L<perlmodstyle>
 
 # Preloaded methods go here.
 
