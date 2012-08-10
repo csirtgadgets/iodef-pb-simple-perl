@@ -9,9 +9,9 @@ sub process {
     my $data = shift;
     my $iodef = shift;
     
-    return unless($data->{'assessment'} || $data->{'Assessment'});
+    return unless($data->{'assessment'} || $data->{'Assessment'} || $data->{'impact'});
     
-    my $assessment  = $data->{'Assessment'} || $data->{'assessment'};
+    my $assessment  = $data->{'Assessment'} || $data->{'assessment'} || $data->{'impact'};
     my $severity    = $data->{'severity'};
     my $confidence  = $data->{'confidence'} || '';
     
