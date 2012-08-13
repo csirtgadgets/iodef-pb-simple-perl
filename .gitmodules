@@ -1,3 +1,3 @@
-[submodule "defs"]
-	path = defs
+[submodule "protocol"]
+	path = protocol
 	url = git@github.com:collectiveintel/iodef-protocol.git
