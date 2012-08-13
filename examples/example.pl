@@ -3,7 +3,6 @@
 use strict;
 
 use lib './lib';
-use lib '../iodef-pb-perl/lib';
 use Data::Dumper;
 use Iodef::Pb::Simple;
 
@@ -23,3 +22,4 @@ my $x = Iodef::Pb::Simple->new({
 my $str = $x->encode();
 warn Dumper($x);
 warn Dumper(IODEFDocumentType->decode($str));
+warn $str;
