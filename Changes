@@ -1,8 +1,9 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.06    2012-08-XX
+0.06    2012-08-15
     - consolidated Iodef::Pb to this module
     - consolidated Iodef::Pb::Format to this module
+    - bugfix to Ipv4 module (protocol fix)
 
 0.05    2012-08-10
     - added CarbonCopy plugin
