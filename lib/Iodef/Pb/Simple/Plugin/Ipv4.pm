@@ -67,13 +67,15 @@ sub process {
         $service = $data->{'service'};
     } elsif($data->{'protocol'} || $data->{'portlist'}) {
         $service = ServiceType->new();
-        my $proto = 'tcp';
-        if($data->{'protocol'}){
-            $proto = normalize($data->{'protocol'});
-            $service->set_ip_protocol($proto);
-        }
+        my $proto = $data->{'protocol'} || $data->{'ip_protocol'};
         if($data->{'portlist'}){
             $service->set_Portlist($data->{'portlist'});
+            # IODEF requires a default
+            $proto = 'tcp' unless($proto);
+        }
+        if($proto){
+            $proto = normalize($proto);
+            $service->set_ip_protocol($proto);
         }
     }
     
