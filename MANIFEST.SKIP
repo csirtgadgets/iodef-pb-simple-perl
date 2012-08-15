@@ -1,3 +1,22 @@
-.gitmodules
-.git/
 protocol/
+
+# Build related
+^blib/
+^MYMETA.yml$
+^MYMETA.json$
+(^|/)\.[^/]*\.tar.gz$
+Makefile.old$
+MANIFEST.SKIP
+pm_to_blib$
+rebuild.sh$
+
+# Backup files
+~$
+\.bak$
+(^|/)\.[^/]*\.swp$
+
+# git
+^.git/
+^.gitmodules$
+^git2cl/
+.gitignore$ # Wherever it appears
