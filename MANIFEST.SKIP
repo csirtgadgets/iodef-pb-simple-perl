@@ -9,6 +9,7 @@ Makefile.old$
 MANIFEST.SKIP
 pm_to_blib$
 rebuild.sh$
+generate_bindings.pl$
 
 # Backup files
 ~$
