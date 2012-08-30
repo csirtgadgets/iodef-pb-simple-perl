@@ -103,6 +103,11 @@ sub write_out {
     if($self->get_group_map && $self->get_group_map->{$args->{'guid'}}){
         $args->{'guid'} = $self->get_group_map->{$args->{'guid'}};
     }
+    
+    ## TODO - guid should be responded to by the router
+    $args->{'uuid'} = '' unless($args->{'uuid'});
+    $args->{'guid'} = '' unless($args->{'guid'});
+    
     my $meta = "feed description:   $args->{'description'}
 feed reporttime:    $args->{'reporttime'}
 feed uuid:          $args->{'uuid'}
