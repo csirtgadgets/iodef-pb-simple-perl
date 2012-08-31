@@ -2,6 +2,7 @@ Revision history for Perl extension Iodef::Pb::Simple.
 
 0.09    2012-09
     - added json output plugin (requires json::xs)
+    - bugfix to snort output
 
 0.08    2012-09-01
     - bugfixes to to_keypair function
