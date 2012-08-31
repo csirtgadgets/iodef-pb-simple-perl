@@ -17,18 +17,19 @@ sub process {
     
     # assume if it's an ARRAY, we're passing an array of AssessmentType's
     unless(ref($assessment) eq 'AssessmentType' || ref($assessment) eq 'ARRAY'){
-        unless(ref($severity) eq 'severity_type'){
-            $severity = SeverityType::severity_type_low();
+        unless(ref($severity) eq 'SeverityType::severity_type'){
+            my $sev = SeverityType::severity_type_low();
             for(lc($severity)){
                 if(/^high$/){
-                    $severity = SeverityType::severity_type_high(),
+                    $sev = SeverityType::severity_type_high(),
                     last;
                 }
                 if(/^medium$/){
-                    $severity = SeverityType::severity_type_medium(),
+                    $sev = SeverityType::severity_type_medium(),
                     last;
                 }
             }
+            $severity = $sev;
         }
     
         my $impact = ImpactType->new({

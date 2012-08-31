@@ -8,7 +8,7 @@ use Module::Pluggable require => 1, search_path => [__PACKAGE__];
 use Try::Tiny;
 
 __PACKAGE__->follow_best_practice();
-__PACKAGE__->mk_accessors(qw(restriction_map group_map));
+__PACKAGE__->mk_accessors(qw(restriction_map group_map config));
 
 # have to do this to load the drivers
 our @plugins = __PACKAGE__->plugins();
@@ -37,6 +37,7 @@ sub init {
     my $self = shift;
     my $args = shift;
     
+    $self->set_config($args->{'config'});
     $self->init_restriction_map($args);
     $self->init_group_map($args);
 }
@@ -77,6 +78,27 @@ sub convert_restriction {
     return 'default'        if($r == RestrictionType::restriction_type_default());
 }
 
+sub convert_severity {
+    my $self = shift;
+    my $r = shift;
+    return unless($r && $r =~ /^\d+$/);
+
+    return 'low'        if($r == SeverityType::severity_type_low());
+    return 'medium'     if($r == SeverityType::severity_type_medium());
+    return 'high'       if($r == SeverityType::severity_type_high());
+}
+
+sub convert_purpose {
+    my $self = shift;
+    my $r = shift;
+    return unless($r && $r =~ /^\d+$/);
+
+    return 'mitigation'     if($r == IncidentType::IncidentPurpose::Incident_purpose_mitigation());
+    return 'other'          if($r == IncidentType::IncidentPurpose::Incident_purpose_other());
+    return 'reporting'      if($r == IncidentType::IncidentPurpose::Incident_purpose_reporting());
+    return 'traceback'      if($r == IncidentType::IncidentPurpose::Incident_purpose_traceback());
+}
+
 sub to_keypair {
     my $self = shift;
     my $data = shift;
@@ -104,11 +126,14 @@ sub to_keypair {
                 $confidence = $assessment->get_Confidence->get_content() || 0;
                 $confidence = sprintf("%.3f",$confidence) unless($confidence =~ /^\d+$/);
             }
+            my $severity = @{$assessment->get_Impact}[0]->get_severity();
+            $severity = $self->convert_severity($severity);
             $assessment = @{$assessment->get_Impact}[0]->get_content->get_content();
         
             ## TODO -- restriction needs to be mapped down to event recursively where it exists in IODEF
             my $restriction = $i->get_restriction() || RestrictionType::restriction_type_private();
-            my $purpose     = $i->get_purpose();
+            my $purpose     = $i->get_purpose() || IncidentType::IncidentPurpose::Incident_purpose_other();
+            $purpose = $self->convert_purpose($purpose);
         
             my ($altid,$altid_restriction);
         
@@ -153,10 +178,12 @@ sub to_keypair {
                 confidence  => $confidence,
                 assessment  => $assessment,
                 restriction => $restriction,
+                severity    => $severity,
                 purpose     => $purpose,
                 alternativeid               => $altid,
                 alternativeid_restriction   => $altid_restriction,
             };
+
             if(my $ad = $i->get_AdditionalData()){
                 foreach my $a (@$ad){
                     next unless($a->get_meaning() eq 'hash');
