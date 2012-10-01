@@ -11,7 +11,7 @@ sub write_out {
     my $args = shift;
         
     my $feed = $args->{'data'};
-    my $array = $self->SUPER::to_keypair($args->{'data'});
+    my $array = $self->SUPER::to_keypair($args);
     
     my $output = $self->get_config->{'bindzone_path'} || DEFAULT_OUTPUT();
     

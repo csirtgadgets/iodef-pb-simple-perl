@@ -16,7 +16,7 @@ sub process {
         $altid = IncidentIDType->new({
             content     => $altid,
             instance    => '',
-            name        => '',       
+            name        => '',   
         });
     }
     

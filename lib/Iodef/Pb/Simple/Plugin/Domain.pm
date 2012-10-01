@@ -22,6 +22,23 @@ sub process {
     
     my @additional_data ;
     
+    # in the event that we wanna track this and pass it along
+    my $service;
+    if($data->{'service'} && ref($data->{'service'}) eq 'ServiceType'){
+        $service = $data->{'service'};
+    } elsif($data->{'protocol'} || $data->{'portlist'}) {
+        $service = ServiceType->new();
+        my $proto = $data->{'protocol'} || $data->{'ip_protocol'};
+        if($data->{'portlist'}){
+            $service->set_Portlist($data->{'portlist'});
+            # IODEF requires a default
+            $proto = 'tcp' unless($proto);
+        }
+        if($proto){
+            $proto = $self->normalize_protocol($proto);
+            $service->set_ip_protocol($proto);
+        }
+    }
     
     my $system = SystemType->new({
         Node    => NodeType->new({
@@ -42,6 +59,10 @@ sub process {
                 content => $data->{'rdata'},
             })
         );
+    }
+    
+    if($service){
+        $system->set_Service($service);
     }
     
     my $event = EventDataType->new({

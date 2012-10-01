@@ -12,13 +12,12 @@ my $addr_regex = qr/$RE{'net'}{'IPv4'}|https?|ftp|[a-z0-9._]+\.[a-z]{2,6}/;
 sub write_out {
     my $self = shift;
     my $args = shift;
-    
-    #delete($args->{'data'});
-    #die ::Dumper($args);
 
-    my $array = $self->to_keypair($args->{'data'});
+    my $array = $self->to_keypair($args);
   
     my @cols;
+    push(@cols,'id') if($args->{'table_uuid'});
+    push(@cols,'relatedid') if($args->{'table_relatedid'});
     push(@cols,(
         'restriction',
         'guid',
@@ -31,13 +30,21 @@ sub write_out {
 
     my %c;
     foreach my $e (@$array){
-        $c{'address'}   = 1 if($e->{'address'});
-        $c{'hash'}      = 1 if($e->{'hash'});
-        $c{'protocol'}  = 1 if($e->{'protocol'});
-        $c{'portlist'}  = 1 if($e->{'portlist'});
-        $c{'rdata'}     = 1 if($e->{'rdata'});
-        $c{'asn'}       = 1 if($e->{'asn'});
+        $c{'address'}       = 1 if($e->{'address'});
+        $c{'hash'}          = 1 if($e->{'hash'});
+        $c{'protocol'}      = 1 if($e->{'protocol'});
+        $c{'portlist'}      = 1 if($e->{'portlist'});
+        $c{'malware_hash'}  = 1 if($e->{'malware_hash'});
+        $c{'rdata'}         = 1 if($e->{'rdata'});
         
+        if($args->{'table_showmeta'}){
+            $c{'asn'}                       = 1 if($e->{'asn'});
+            $c{'asn_desc'}                  = 1 if($e->{'asn_desc'});
+            $c{'prefix'}                    = 1 if($e->{'prefix'});
+            $c{'cc'}                        = 1 if($e->{'cc'});
+            $c{'rir'}                       = 1 if($e->{'rir'});
+            $c{'malware_detection_rate'}    = 1 if($e->{'malware_detection_rate'});
+        }
         # this could be a performance killer
         # work-around for searches that don't have
         # an address associated with it and would confuse
@@ -45,23 +52,22 @@ sub write_out {
         $c{'address'}   = 1 if($e->{'description'} =~ /search $addr_regex$/);
     }
     
-    if($c{'address'}){
-        push(@cols,'address');
-    }
-    if($c{'hash'} && !$c{'address'}){
-        push(@cols,'hash');
-    }
-    if($c{'protocol'}){
-        push(@cols,'protocol');
-    }
-    if($c{'portlist'}){
-        push(@cols,'portlist');
-    }
-    if($c{'rdata'}){
-        push(@cols,'rdata');
-    }
-    if($c{'asn'}){
-        push(@cols,'asn');
+    push(@cols,'address')       if($c{'address'});
+    push(@cols,'rdata')         if($c{'rdata'});
+    push(@cols,'malware_hash')  if($c{'malware_hash'});
+    push(@cols,'prefix')        if($c{'prefix'});
+    push(@cols,'hash')          if($c{'hash'} && !$c{'address'});
+    push(@cols,'protocol')      if($c{'protocol'});
+    push(@cols,'portlist')      if($c{'portlist'});
+
+    ## TODO -- make these optional flags passed through
+    ## table_showmeta or via the -f option
+    if($args->{'table_showmeta'}){
+        push(@cols,'asn') if($c{'asn'});
+        push(@cols,'asn_desc') if($c{'asn_desc'});
+        push(@cols,'cc') if($c{'cc'});
+        push(@cols,'rir') if($c{'rir'});
+        push(@cols,'malware_detection_rate'), if($c{'malware_detection_rate'});
     }
     ## TODO -- malware hash lookups?
     

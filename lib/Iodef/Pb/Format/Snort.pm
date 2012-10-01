@@ -11,7 +11,7 @@ sub write_out {
     
     my $config = $args->{'config'};
     
-    my $array = $self->SUPER::to_keypair($args->{'data'});
+    my $array = $self->SUPER::to_keypair($args);
     
     return '' unless(exists(@{$array}[0]->{'address'}));
 

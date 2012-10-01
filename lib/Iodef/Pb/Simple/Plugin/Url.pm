@@ -39,7 +39,7 @@ sub process {
         ExtensionType->new({
             dtype       => ExtensionType::DtypeType::dtype_type_string(),
             meaning     => 'url hash',
-            formatid    => 'md5',
+            formatid    => 'sha1',
             content     => $data->{'sha1'},
         })
     ));
@@ -59,7 +59,6 @@ sub process {
             }),
         }),
     });
-    
     my $incident = @{$iodef->get_Incident()}[0];
     push(@{$incident->{'EventData'}},$event);
 }

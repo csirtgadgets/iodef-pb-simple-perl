@@ -59,6 +59,25 @@ sub restriction_normalize {
     }
     return $restriction;
 }
+
+sub normalize_protocol {
+    my $self = shift;
+    my $proto = shift;
+    return $proto if($proto =~ /^\d+$/);
+
+    for(lc($proto)){
+        if(/^tcp$/){
+            return(6);
+        }
+        if(/^udp$/){
+            return(17);
+        }
+        if(/^icmp$/){
+            return(1);
+        }
+    }
+    return($proto);
+}
     
 
 1;

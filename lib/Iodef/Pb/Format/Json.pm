@@ -10,7 +10,7 @@ sub write_out {
     my $self = shift;
     my $args = shift;
 
-    my $array = $self->to_keypair($args->{'data'});
+    my $array = $self->to_keypair($args);
     my @json_stream;
     
     push(@json_stream,JSON::XS::encode_json($_)) foreach(@$array);

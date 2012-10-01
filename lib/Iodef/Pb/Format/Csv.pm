@@ -11,7 +11,7 @@ sub write_out {
     my $config = $args->{'config'};
     my $feed = $args->{'data'};
     
-    my $array = $self->SUPER::to_keypair($args->{'data'});
+    my $array = $self->SUPER::to_keypair($args);
     
     $config = $config->{'config'};
     my $nosep = $config->{'csv_noseperator'};

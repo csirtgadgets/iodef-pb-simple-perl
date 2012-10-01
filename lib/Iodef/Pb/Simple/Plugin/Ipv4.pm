@@ -74,7 +74,7 @@ sub process {
             $proto = 'tcp' unless($proto);
         }
         if($proto){
-            $proto = normalize($proto);
+            $proto = $self->normalize_protocol($proto);
             $service->set_ip_protocol($proto);
         }
     }
@@ -106,24 +106,6 @@ sub process {
     });
     my $incident = @{$iodef->get_Incident()}[0];
     push(@{$incident->{'EventData'}},$event);
-}
-
-sub normalize {
-    my $proto = shift;
-    return $proto if($proto =~ /^\d+$/);
-
-    for(lc($proto)){
-        if(/^tcp$/){
-            return(6);
-        }
-        if(/^udp$/){
-            return(17);
-        }
-        if(/^icmp$/){
-            return(1);
-        }
-    }
-    return($proto);
 }
 
 1;

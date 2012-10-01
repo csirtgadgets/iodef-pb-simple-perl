@@ -101,7 +101,9 @@ sub convert_purpose {
 
 sub to_keypair {
     my $self = shift;
-    my $data = shift;
+    my $args = shift;
+    
+    my $data = $args->{'data'};
     
     my @array;
     
@@ -109,6 +111,7 @@ sub to_keypair {
     if(ref($data) eq 'IODEFDocumentType'){
         $data = [$data];
     }
+
     foreach my $doc (@$data){
         next unless(ref($doc) eq 'IODEFDocumentType');
         foreach my $i (@{$doc->get_Incident()}){
@@ -132,21 +135,26 @@ sub to_keypair {
         
             ## TODO -- restriction needs to be mapped down to event recursively where it exists in IODEF
             my $restriction = $i->get_restriction() || RestrictionType::restriction_type_private();
-            my $purpose     = $i->get_purpose() || IncidentType::IncidentPurpose::Incident_purpose_other();
+            my $purpose     = $i->get_purpose()     || IncidentType::IncidentPurpose::Incident_purpose_other();
             $purpose = $self->convert_purpose($purpose);
         
             my ($altid,$altid_restriction);
-        
-            if(my $x = $i->get_AlternativeID()){
+            if(my $x = $i->get_AlternativeID() || $i->get_RelatedActivity()){
                 if(ref($x) eq 'ARRAY'){
                     $altid               = @{$x}[0];
                 } else {
                     $altid               = $x;
                 }
-                $altid_restriction   = $altid->get_restriction();
-                $altid               = @{$altid->get_IncidentID}[0]->get_content();
+                ## TODO -- clean this up
+                $altid_restriction  = $altid->get_restriction() || @{$altid->get_IncidentID}[0]->get_restriction();
+                $altid              = @{$altid->get_IncidentID}[0]->get_content();
+                
             }
             
+            
+            # TODO -- only grab the first one for now
+            my $relatedid = @{$i->get_RelatedActivity()->get_IncidentID()}[0]->get_content() if($i->get_RelatedActivity());
+           
             my $guid;
             if(my $iad = $i->get_AdditionalData()){
                 foreach (@$iad){
@@ -182,26 +190,48 @@ sub to_keypair {
                 purpose     => $purpose,
                 alternativeid               => $altid,
                 alternativeid_restriction   => $altid_restriction,
-            };
-
-            if(my $ad = $i->get_AdditionalData()){
-                foreach my $a (@$ad){
-                    next unless($a->get_meaning() eq 'hash');
-                    $hash->{'hash'}         = $a->get_content();
-                    push(@array,$hash);
-                }
-            }
+                relatedid                   => $relatedid,
+            };          
+          
             if($i->get_EventData()){
                 foreach my $e (@{$i->get_EventData()}){
                     my @flows = (ref($e->get_Flow()) eq 'ARRAY') ? @{$e->get_Flow()} : $e->get_Flow();
                     foreach my $f (@flows){
                         my @systems = (ref($f->get_System()) eq 'ARRAY') ? @{$f->get_System()} : $f->get_System();
                         foreach my $s (@systems){
-                            my $asn;
+                            my ($asn,$asn_desc,$prefix,$cc,$rir,$malware_hash,$rdata);
                             my $ad = $s->get_AdditionalData();
                             if($ad){
-                                foreach (@$ad){
-                                    $asn = $_->get_content() if($_->get_meaning() eq 'asn');
+                                foreach my $e (@$ad){
+                                    next unless($e->get_meaning());
+                                    for(lc($e->get_meaning())){
+                                        if(/^asn$/){
+                                            $asn = $e->get_content();
+                                            last;
+                                        }
+                                        if(/^asn_desc$/){
+                                            $asn_desc = $e->get_content();
+                                            last;
+                                        }
+                                        if(/^prefix$/){
+                                            $prefix = $e->get_content();
+                                            last;
+                                        }
+                                        if(/^cc$/){
+                                            $cc = $e->get_content();
+                                            last;
+                                        }
+                                        if(/^rir$/){
+                                            $rir = $e->get_content();
+                                            last;
+                                        }
+                                        if(/^(rdata)$/){
+                                            ## todo -- make this work for many diff additional datat formatids (NS, CNAME, A, etc)
+                                            #push(@$rdata),$e->get_content());
+                                            $rdata = $e->get_content() if($e->get_formatid() eq 'A');
+                                            last;
+                                        }
+                                    }
                                 }
                             }
                             
@@ -211,9 +241,14 @@ sub to_keypair {
                                 my $addresses = $n->get_Address();
                                 $addresses = [$addresses] if(ref($addresses) eq 'AddressType');
                                 foreach my $a (@$addresses){
-                                    $hash->{'address'}     = $a->get_content();
-                                    $hash->{'restriction'} = $restriction;
-                                    $hash->{'asn'}         = $asn;  
+                                    $hash->{'address'}      = $a->get_content();
+                                    $hash->{'restriction'}  = $restriction;
+                                    $hash->{'asn'}          = $asn;
+                                    $hash->{'asn_desc'}     = $asn_desc;
+                                    $hash->{'cc'}           = $cc;
+                                    $hash->{'rir'}          = $rir;
+                                    $hash->{'prefix'}       = $prefix;
+                                    $hash->{'rdata'}        = $rdata;                           
                                     
                                     if($service){
                                         my ($portlist,$protocol);
@@ -230,7 +265,33 @@ sub to_keypair {
                         }
                     }
                 }
+            } else {
+                if(my $ad = $i->get_AdditionalData()){
+                    my $found = 0;
+                    foreach my $a (@$ad){
+                        for(lc($a->get_meaning())){
+                            if(/^malware hash$/){
+                                $found = 1;
+                                $hash->{'malware_hash'} = $a->get_content();
+                                last;
+                            }
+                            if(/^tc malware registry detection rate$/){
+                                $hash->{'malware_detection_rate'} = $a->get_content().'%';
+                                last;
+                            }
+                        }
+                    }
+                    push(@array,$hash) if($found);
+                }
             }
+        }
+    }
+    ## TODO -- multi column sort?
+    if(my $s = $args->{'sortby'}){
+        if(uc($args->{'sortby_direction'}) eq 'ASC'){
+            @array = sort { $a->{$s} cmp $b->{$s} } @array;
+        } else {
+            @array = sort { $b->{$s} cmp $a->{$s} } @array;
         }
     }
     return(\@array); 
