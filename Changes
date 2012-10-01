@@ -1,5 +1,8 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
+0.10    2012-10-01
+    - stoooopid bugfix
+
 0.09    2012-10-01
     - added json output plugin (requires json::xs)
     - bugfix to snort output
