@@ -54,9 +54,10 @@ sub process {
     if($data->{'rdata'}){
         $system->set_AdditionalData(
             ExtensionType->new({
-                dtype   => ExtensionType::DtypeType::dtype_type_string(),
-                meaning => 'rdata',
-                content => $data->{'rdata'},
+                dtype       => ExtensionType::DtypeType::dtype_type_string(),
+                meaning     => 'rdata',
+                formatid    => $data->{'rdata_type'} || 'A',
+                content     => $data->{'rdata'},
             })
         );
     }
