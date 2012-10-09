@@ -97,10 +97,13 @@ sub write_out {
                 $e->{'address'} .= '...';
             }
         }
-        ## TODO: do we need this?
         if($args->{'compress_address'} && length($e->{'description'}) > 32){
             $e->{'description'} = substr($e->{'description'},0,31);
             $e->{'description'} .= '...';
+        }
+        if($args->{'compress_address'} && length($e->{'alternativeid'}) > 75){
+            $e->{'alternativeid'} = substr($e->{'alternativeid'},0,74);
+            $e->{'alternativeid'} = $e->{'alternativeid'} .= '...';
         }
         $table->load([ map { $e->{$_} } @cols]);
     }
