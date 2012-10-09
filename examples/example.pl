@@ -7,6 +7,9 @@ use Data::Dumper;
 use Iodef::Pb::Simple;
 
 my $x = Iodef::Pb::Simple->new({
+    service => "ssh",
+    protocol    => 'tcp',
+    portlist    => '22',
     contact => 'Wes Young',
     id      => '1234',
     address => '1.1.1.1',

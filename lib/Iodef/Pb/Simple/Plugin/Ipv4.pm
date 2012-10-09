@@ -66,7 +66,17 @@ sub process {
     if($data->{'service'} && ref($data->{'service'}) eq 'ServiceType'){
         $service = $data->{'service'};
     } elsif($data->{'protocol'} || $data->{'portlist'}) {
-        $service = ServiceType->new();
+        if($data->{'service'}){
+            my $app = SoftwareType->new({
+                name    => $data->{'service'},
+            });
+            $service = ServiceType->new({
+                Application => $app,
+            });
+        } else {
+            $service = ServiceType->new();
+        }
+        
         my $proto = $data->{'protocol'} || $data->{'ip_protocol'};
         if($data->{'portlist'}){
             $service->set_Portlist($data->{'portlist'});
