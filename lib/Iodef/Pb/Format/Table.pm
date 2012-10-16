@@ -12,7 +12,7 @@ my $addr_regex = qr/$RE{'net'}{'IPv4'}|https?|ftp|[a-z0-9._]+\.[a-z]{2,6}/;
 sub write_out {
     my $self = shift;
     my $args = shift;
-
+    
     my $array = $self->to_keypair($args);
   
     my @cols;
@@ -101,7 +101,7 @@ sub write_out {
             $e->{'description'} = substr($e->{'description'},0,31);
             $e->{'description'} .= '...';
         }
-        if($args->{'compress_address'} && length($e->{'alternativeid'}) > 75){
+        if($args->{'compress_address'} && $e->{'alternativeid'} && length($e->{'alternativeid'}) > 75){
             $e->{'alternativeid'} = substr($e->{'alternativeid'},0,74);
             $e->{'alternativeid'} = $e->{'alternativeid'} .= '...';
         }

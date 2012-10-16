@@ -6,7 +6,7 @@ use warnings;
 
 require Exporter;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 $VERSION = eval $VERSION;  # see L<perlmodstyle>
 
 our @ISA = qw(Exporter);
