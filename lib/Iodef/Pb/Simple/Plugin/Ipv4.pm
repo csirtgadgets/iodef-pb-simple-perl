@@ -79,6 +79,9 @@ sub process {
         
         my $proto = $data->{'protocol'} || $data->{'ip_protocol'};
         if($data->{'portlist'}){
+            # normalize peoples wierd port habbits
+            $data->{'portlist'} =~ m/(\d+(-\d+)?)$/;
+            $data->{'portlist'} = $1;
             $service->set_Portlist($data->{'portlist'});
             # IODEF requires a default
             $proto = 'tcp' unless($proto);
