@@ -1,6 +1,9 @@
 package Iodef::Pb::Format::Snort;
 use base 'Iodef::Pb::Format';
 
+use strict;
+use warnings;
+
 use Snort::Rule;
 use Regexp::Common qw/net/;
 use Parse::Range qw(parse_range);
@@ -30,18 +33,17 @@ sub write_out {
     my $rules = '';
     foreach (@$array){
         next unless($_->{'address'});
-        if(exists($_->{'rdata'})){
+
+        if(exists($_->{'rdata'}) && defined($_->{'rdata'})){
             $_->{'portlist'} = 53;
         }
-        my $portlist = ($_->{'portlist'}) ? $_->{'portlist'} : 'any';
+
+        my $portlist = ($_->{'portlist'}) ? $_->{'portlist'} : 'any';       
 
         my $priority = 1;
-        
-        if($_->{'severity'}){
-            for(lc($_->{'severity'})){
-                $priority = 5 if(/medium/);
-                $priority = 9 if(/high/);
-            }
+        for(lc($_->{'severity'})){
+            $priority = 5 if(/medium/);
+            $priority = 9 if(/high/);
         }
 
         my $dstnet      = 'any';
@@ -56,11 +58,10 @@ sub write_out {
         }
         elsif (isdomain($_->{'address'})) {
             #$_->{'protocol'} = 17 unless($_->{'protocol'});
-            # it's not clear if this should be strictly 'alert udp ...' or 'alert ip ...'
-            # for now this is safe till we have more data on the functionality.
-            
+            # override this for now, regardless of what's in $PROTOCOL
+            # most of these will be looking at udp packets
+            # if anything it should be set to undef
             $_->{'protocol'} = 17;
-            
             $dstport = 53;
             $dstnet = 'any';
             $dnsdomain = $_->{'address'};
@@ -88,7 +89,7 @@ sub write_out {
         );
 
         my $reference = make_snort_ref($_->{'alternativeid'});
-    
+
         $r->opts('msg',$msg_prefix . $_->{'restriction'}.' - '.$_->{'assessment'}.' '.$_->{'description'});
         $r->opts('threshold', $thresh) if $thresh;
         $r->opts('tag', $tag) if $tag;
@@ -99,17 +100,31 @@ sub write_out {
 
         #alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (Msg: "Mal_URI
         #www.badsite.com/malware.pl"; flow: to_server, established;
-        #content:"Host|3A| www.basesite.com"; nocase;
+        #content:"Host|3A| www.basesite.com|0D 0A|"; nocase;
         #content:"/malware.pl"; http_uri; nocase; sid:23424234;)
+        
+        # avoid 
+        # FATAL ERROR: ... ParsePattern() dummy buffer overflow, make a smaller pattern please! (Max size = 2047) 
+        my $skip_this_rule = 0;
+        
         if ($urlhost) {
             $rules .= "# $urlhost    [urlhost rule]\n";
             $r->opts('flow', 'to_server');
             if (!isipv4($urlhost)) {
-                $r->opts('content', 'Host|3A| ' . escape_content($urlhost));
+                if (length($urlhost) > 2047) {
+                    $rules .= "# Skipping rule for $urlhost because the length exceeds snort's content limit of 2047\n\n";
+                    $skip_this_rule = 1;
+                }
+                # http://stackoverflow.com/questions/5757290/http-header-line-break-style
+                $r->opts('content', 'Host|3A| ' . escape_content($urlhost) . "|0D 0A|"); # add \r\n so eg www.foo.co doesnt also match www.foo.co
                 $r->opts('http_header');
                 $r->opts('nocase');
             }
             if ($urlfile) {
+                if (length($urlfile) > 2047) {
+                    $rules .= "# Skipping rule for $urlfile because the length exceeds snort's content limit of 2047\n\n";
+                    $skip_this_rule = 1;
+                }
                 $r->opts('content', escape_content($urlfile));
                 $r->opts('http_uri');
                 $r->opts('nocase');
@@ -125,7 +140,7 @@ sub write_out {
             $rules .= "# $dstnet [ip address only / not url / not domain rule]\n"
         }
 
-        $rules .= $r->string()."\n\n";
+        $rules .= $r->string()."\n\n" unless($skip_this_rule);
     }
     return $rules;
 }

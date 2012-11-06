@@ -1,6 +1,8 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.11    2012-10
+0.11    2012-11
+    - bugfix to snort plugin
+    - ported bro plugin
     - bugfix to domain plugin (adding rdata_type keyword)
     - added service type to domain and ipv4 plugins
     - bugfix to portlist for ipv4 and domain
