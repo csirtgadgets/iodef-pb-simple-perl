@@ -22,7 +22,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 	iodef_descriptions iodef_assessments iodef_confidence iodef_impacts iodef_impacts_first
     iodef_additional_data iodef_systems iodef_addresses iodef_events_additional_data iodef_services
     iodef_systems_additional_data iodef_normalize_restriction iodef_guid iodef_uuid iodef_malware
-    iodef_systems_bgp
+    iodef_bgp
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
@@ -168,6 +168,41 @@ sub iodef_addresses {
     return(\@array);
 }
 
+sub iodef_bgp {
+    my $iodef   = shift;
+    
+    return unless($iodef);
+    
+    if(ref($iodef) eq 'IODEFDocumentType'){
+        $iodef = $iodef->get_Incident();
+    }
+    
+    $iodef = [$iodef] unless(ref($iodef) eq 'ARRAY');
+        
+    my @array;
+    foreach my $i (@$iodef){
+        next unless($i->get_EventData());
+        foreach my $e (@{$i->get_EventData()}){
+            my @flows = (ref($e->get_Flow()) eq 'ARRAY') ? @{$e->get_Flow()} : $e->get_Flow();
+            foreach my $f (@flows){
+                my @systems = (ref($f->get_System()) eq 'ARRAY') ? @{$f->get_System()} : $f->get_System();
+                foreach my $s (@systems){
+                    my $x = _additional_data($s);
+                    next unless($x);
+                    my $hash;
+                    foreach (@$x){
+                        next unless(lc($_->get_meaning()) =~ /^(asn|asn_desc|prefix|rir|cc)$/);
+                        $hash->{$_->get_meaning()} = $_->get_content();
+                    }
+                    push(@array,$hash);
+                }
+            }
+        }
+    }
+    return unless(@array);
+    return(\@array);
+}
+
 sub iodef_systems {
     my $iodef = shift;
     
@@ -255,23 +290,7 @@ sub iodef_systems_additional_data {
         }
     }
     return($array);
-}
-
-sub iodef_systems_bgp {
-    my $iodef = shift;
-    
-    return unless(ref($iodef) eq 'SystemType');
-    my $array = _additional_data($iodef) or return;
-    
-    my $hash;
-    
-    foreach my $s (@$array){
-        next unless(lc($s->get_meaning()) =~ /^(asn|asn_desc|prefix|rir|cc)$/);
-        $hash->{$s->get_meaning()} = $s->get_content(); 
-    }
-    return($hash);
-}
-    
+}    
 
 sub iodef_guid {
     my $iodef = shift;

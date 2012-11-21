@@ -27,6 +27,7 @@ sub process {
     }
     
     if($data->{'asn'}){
+        $data->{'asn'} =~ s/^(AS|as)//;
         push(@additional_data,ExtensionType->new({
             dtype   => ExtensionType::DtypeType::dtype_type_string(),
             meaning => 'asn',
