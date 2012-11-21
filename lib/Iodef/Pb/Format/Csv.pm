@@ -8,14 +8,19 @@ sub write_out {
     my $self = shift;
     my $args = shift;
     
-    my $config = $args->{'config'};
-    my $feed = $args->{'data'};
-    
     my $array = $self->SUPER::to_keypair($args);
     
-    $config = $config->{'config'};
-    my $nosep = $config->{'csv_noseperator'};
+    my $config = $args->{'config'};
+
+    my @config_search_path      = ( 'claoverride', $args->{'query'}, 'client' );
+    
+    my $cfg_fields              = $args->{'fields'}             || $self->SUPER::confor($config, \@config_search_path, 'fields',             undef);
+    my $cfg_csv_noseperator     = $args->{'csv_noseperator'}    || $self->SUPER::confor($config, \@config_search_path, 'csv_noseperator',    undef);
+    
     my @header = keys(%{@{$array}[0]});
+    if($cfg_fields){
+        @header = @$cfg_fields;
+    }
 
     @header = sort { $a cmp $b } @header;
     my $body = '';
@@ -25,7 +30,7 @@ sub write_out {
         foreach (@header){
             if($a->{$_} && !ref($a->{$_})){
                 # deal with , in the field
-                if($nosep){
+                if($cfg_csv_noseperator){
                     $a->{$_} =~ s/,/ /g;
                     $a->{$_} =~ s/\s+/ /g;
                 } else {

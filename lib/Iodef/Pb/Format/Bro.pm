@@ -18,6 +18,10 @@ sub write_out {
     return '' unless(exists(@{$array}[0]->{'address'}));
     
     $config = $config->{'config'};
+    
+    my @config_search_path = ('claoverride',  $args->{'query'}, 'client' );
+    # this is just as example...
+    # my $cfg_option = $args->{'bro_option'} || $self->SUPER::confor($config, \@config_search_path, 'bro_option',        undef);
 
     my $result = "#fields\thost\tnet\tstr\tstr_type\tmeta.source\tmeta.desc\tmeta.url\tmeta.cif_impact\tmeta.cif_severity\tmeta.cif_confidence\n";
     foreach my $a (@$array){

@@ -17,18 +17,19 @@ sub write_out {
     my $array = $self->SUPER::to_keypair($args);
     
     return '' unless(exists(@{$array}[0]->{'address'}));
-
-    $config = $config->{'config'};
+    
+    ## TODO -- push this to the client
+    my @config_search_path = ('claoverride',  $args->{'query'}, 'client' );
     
     # allow override of snort rule params
-    my $tag         = confor($config, 'snort_tag', undef);
-    my $pri         = confor($config, 'snort_priority', undef);
-    my $sid         = confor($config, 'snort_startsid', 1);
-    my $thresh      = confor($config, 'snort_threshold', 'type limit,track by_src,count 1,seconds 3600');
-    my $classtype   = confor($config, 'snort_classtype', undef);
-    my $srcnet      = confor($config, 'snort_srcnet', 'any');
-    my $srcport     = confor($config, 'snort_srcport', 'any');
-    my $msg_prefix  = confor($config, 'snort_msg_prefix','');
+    my $tag         = $self->SUPER::confor($config, \@config_search_path, 'snort_tag',        undef);
+    my $pri         = $self->SUPER::confor($config, \@config_search_path, 'snort_priority',   undef);
+    my $sid         = $self->SUPER::confor($config, \@config_search_path, 'snort_startsid',   5000000);
+    my $thresh      = $self->SUPER::confor($config, \@config_search_path, 'snort_threshold',  'type limit,track by_src,count 1,seconds 3600');
+    my $classtype   = $self->SUPER::confor($config, \@config_search_path, 'snort_classtype',  undef);
+    my $srcnet      = $self->SUPER::confor($config, \@config_search_path, 'snort_srcnet',     'any');
+    my $srcport     = $self->SUPER::confor($config, \@config_search_path, 'snort_srcport',    'any');
+    my $msg_prefix  = $self->SUPER::confor($config, \@config_search_path, 'snort_msg_prefix', '');
     
     my $rules = '';
     foreach (@$array){
