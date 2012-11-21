@@ -6,6 +6,9 @@ Revision history for Perl extension Iodef::Pb::Simple.
     - bugfix to domain plugin (adding rdata_type keyword)
     - added service type to domain and ipv4 plugins
     - bugfix to portlist for ipv4 and domain
+    - added better bgp support
+    - backported 'advanced config' support from cif-client v0
+    - added html output
 
 0.10    2012-10-01
     - stoooopid bugfix
