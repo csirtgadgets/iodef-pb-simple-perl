@@ -294,6 +294,12 @@ sub to_keypair {
             @array = sort { $b->{$s} cmp $a->{$s} } @array;
         }
     }
+    # http://code.google.com/p/collective-intelligence-framework/issues/detail?id=206
+    # we should do this in the client, but sort/order might matter on the limit
+    if($args->{'limit'} && $args->{'limit'} < ($#array+1)){
+        my $limit = $args->{'limit'};
+        splice(@array,0,($#array-$limit)+1);
+    }
     return(\@array); 
 }
 
