@@ -22,7 +22,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 	iodef_descriptions iodef_assessments iodef_confidence iodef_impacts iodef_impacts_first
     iodef_additional_data iodef_systems iodef_addresses iodef_events_additional_data iodef_services
     iodef_systems_additional_data iodef_normalize_restriction iodef_guid iodef_uuid iodef_malware
-    iodef_bgp
+    iodef_bgp iodef_contacts iodef_contacts_cc iodef_normalize_purpose
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
@@ -37,31 +37,69 @@ use Module::Pluggable require => 1;
 my @plugins = __PACKAGE__->plugins();
 
 sub iodef_normalize_restriction {
-    my $self            = shift;
-    my $restriction     = shift;
+    my $restriction     = shift || return;
     
-    return unless($restriction);
-    return $restriction if($restriction =~ /^[1-4]$/);
-    for(lc($restriction)){
-        if(/^private$/){
-            $restriction = RestrictionType::restriction_type_private(),
-            last;
+    if($restriction =~ /^\d$/){
+        return 'private' if($restriction == RestrictionType::restriction_type_private());
+        return 'public' if($restriction == RestrictionType::restriction_type_public());
+        return 'need-to-know' if($restriction == RestrictionType::restriction_type_need_to_know());
+        return 'default' if($restriction == RestrictionType::restriction_type_default());
+        return;
+    } else {
+        for(lc($restriction)){
+            if(/^private$/){
+                $restriction = RestrictionType::restriction_type_private(),
+                last;
+            }
+            if(/^public$/){
+                $restriction = RestrictionType::restriction_type_public(),
+                last;
+            }
+            if(/^need-to-know$/){
+                $restriction = RestrictionType::restriction_type_need_to_know(),
+                last;
+            }
+            if(/^default$/){
+                $restriction = RestrictionType::restriction_type_default(),
+                last;
+            }   
         }
-        if(/^public$/){
-            $restriction = RestrictionType::restriction_type_public(),
-            last;
-        }
-        if(/^need-to-know$/){
-            $restriction = RestrictionType::restriction_type_need_to_know(),
-            last;
-        }
-        if(/^default$/){
-            $restriction = RestrictionType::restriction_type_default(),
-            last;
-        }   
     }
     return $restriction;
 }
+
+sub iodef_normalize_purpose {
+    my $thing   = shift || return;
+   
+    if($thing =~ /^\d$/){
+        return 'other' if($thing == IncidentType::IncidentPurpose::Incident_purpose_other());
+        return 'mitigation' if($thing == IncidentType::IncidentPurpose::Incident_purpose_mitigation());
+        return 'traceback' if($thing == IncidentType::IncidentPurpose::Incident_purpose_traceback());
+        return 'reporting' if($thing == IncidentType::IncidentPurpose::Incident_purpose_reporting());
+        return;
+    } else {
+        for(lc($thing)){
+            if(/^other/){
+                $thing = IncidentType::IncidentPurpose::Incident_purpose_other(),
+                last;
+            }
+            if(/^mitigation$/){
+                $thing = IncidentType::IncidentPurpose::Incident_purpose_mitigation(),
+                last;
+            }
+            if(/^traceback$/){
+                $thing = IncidentType::IncidentPurpose::Incident_purpose_traceback(),
+                last;
+            }
+            if(/^reporting$/){
+                $thing = IncidentType::IncidentPurpose::Incident_purpose_reporting(),
+                last;
+            }   
+        }
+    }
+    return $thing;
+}
+
 
 sub iodef_descriptions {
     my $iodef = shift;
@@ -74,6 +112,36 @@ sub iodef_descriptions {
     }
     return(\@array);
 }
+
+sub iodef_contacts {
+    my $iodef = shift;
+    
+    my @array;
+    foreach my $i (@{$iodef->get_Incident()}){
+        my $c = $i->get_Contact();
+        next unless($c);
+        $c = [$c] unless(ref($c) eq 'ARRAY');
+        push(@array,@$c);
+    }
+    return(\@array);
+}
+
+sub iodef_contacts_cc {
+    my $i = shift;
+    
+    return unless($i->get_Contact());
+    my $contacts = (ref($i->get_Contact()) eq 'ContactType') ? [$i->get_Contact()] : $i->get_Contact();
+ 
+    my @array;
+    foreach my $c (@$contacts){
+        next unless($c->get_type() == ContactType::ContactRole::Contact_role_cc());
+        push(@array,$c);
+    }
+    return unless(@array);
+    return(\@array);
+}
+    
+        
 
 sub iodef_confidence {
     my $iodef = shift;

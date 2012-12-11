@@ -18,6 +18,7 @@ sub new {
     my $args = shift;
      
     my $driver  = $args->{'format'} || 'Table';
+    $driver = ucfirst($driver);
     $driver     = __PACKAGE__.'::'.$driver;
    
     my $data;

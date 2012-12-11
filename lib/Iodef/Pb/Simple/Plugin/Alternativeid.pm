@@ -19,7 +19,7 @@ sub process {
                 instance    => '',
                 name        => '',       
             }),
-            restriction => $self->restriction_normalize($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private(),
+            restriction => iodef_restriction_normalize($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private(),
         });
     }
     

@@ -12,7 +12,6 @@ sub write_out {
 
     my $array = $self->to_keypair($args);
     my @json_stream;
-    
     push(@json_stream,JSON::XS::encode_json($_)) foreach(@$array);
     my $text = join("\n",@json_stream);
     return $text;
