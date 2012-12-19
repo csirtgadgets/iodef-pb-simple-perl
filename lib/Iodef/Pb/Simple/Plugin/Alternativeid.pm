@@ -4,6 +4,8 @@ use base 'Iodef::Pb::Simple::Plugin';
 use strict;
 use warnings;
 
+use Iodef::Pb::Simple qw/iodef_normalize_restriction/;
+
 sub process {
     my $self = shift;
     my $data = shift;
@@ -19,7 +21,7 @@ sub process {
                 instance    => '',
                 name        => '',       
             }),
-            restriction => iodef_restriction_normalize($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private(),
+            restriction => iodef_normalize_restriction($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private(),
         });
     }
     

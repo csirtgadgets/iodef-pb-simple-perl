@@ -3,6 +3,8 @@ package Iodef::Pb::Simple::Plugin;
 use strict;
 use warnings;
 
+use Iodef::Pb::Simple qw/iodef_normalize_restriction/;
+
 sub process {}
 
 sub normalize_timestamp {
