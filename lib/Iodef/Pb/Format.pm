@@ -128,7 +128,15 @@ sub to_keypair {
             my $confidence = $assessment->get_Confidence->get_rating();
             if($confidence == ConfidenceType::ConfidenceRating::Confidence_rating_numeric()){
                 $confidence = $assessment->get_Confidence->get_content() || 0;
-                $confidence = sprintf("%.3f",$confidence) unless($confidence =~ /^\d+$/);
+                unless($confidence =~ /^\d+$/){
+                    if($args->{'round_confidence'}){
+                        # we round down, always, error on the side of caution
+                        $confidence = int($confidence);
+                    } else {
+                        $confidence = sprintf("%.3f",$confidence) ;
+                    }
+                
+                }
             }
             my $severity = @{$assessment->get_Impact}[0]->get_severity();
             $severity = $self->convert_severity($severity);
