@@ -1,6 +1,6 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.11    2012-11
+0.11    2012-12-19
     - added raw (array keypair return) support
     - added 'limit' option
     - bugfix to snort plugin
@@ -11,6 +11,8 @@ Revision history for Perl extension Iodef::Pb::Simple.
     - added better bgp support
     - backported 'advanced config' support from cif-client v0
     - added html output
+    - fix to restriction functions
+    - added option allowing the rounding of floating point confidence numbers
 
 0.10    2012-10-01
     - stoooopid bugfix
