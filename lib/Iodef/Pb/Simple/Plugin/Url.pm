@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use URI::Escape;
-use Digest::SHA1 qw/sha1_hex/;
+use Digest::SHA qw/sha1_hex/;
 use Digest::MD5 qw/md5_hex/;
 use Encode qw(encode_utf8);
 

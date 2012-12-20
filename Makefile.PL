@@ -18,5 +18,6 @@ requires    'JSON::XS'                      => '2.29';
 requires    'Compress::Snappy'              => '0.18';
 requires    'MIME::Base64'                  => '0.08';
 requires    'HTML::Table'                   => '2.08';
+requires    'Digest::SHA'                   => '5.40';
 
 WriteAll();
