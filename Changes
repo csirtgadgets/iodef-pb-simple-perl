@@ -1,5 +1,8 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
+0.14    2012-12-27
+    - Makefile.PL fix, added Text::Table
+
 0.13    2012-12-26
     - another digest::sha1 fix
 
