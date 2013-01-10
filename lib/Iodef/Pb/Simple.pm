@@ -44,7 +44,7 @@ sub is_uuid {
     return(1);
 }
 
-sub generate_uuid_random {
+sub uuid_random {
     my $uuid    = OSSP::uuid->new();
     $uuid->make('v4');
     my $str = $uuid->export('str');
@@ -52,7 +52,7 @@ sub generate_uuid_random {
     return($str);
 }
 
-sub generate_uuid_ns {
+sub uuid_ns {
     my $source = shift;
     my $uuid = OSSP::uuid->new();
     my $uuid_ns = OSSP::uuid->new();
