@@ -6,7 +6,7 @@ use warnings;
 
 require Exporter;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 $VERSION = eval $VERSION;  # see L<perlmodstyle>
 
 our @ISA = qw(Exporter);
@@ -23,6 +23,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
     iodef_additional_data iodef_systems iodef_addresses iodef_events_additional_data iodef_services
     iodef_systems_additional_data iodef_normalize_restriction iodef_guid iodef_uuid iodef_malware
     iodef_bgp iodef_contacts iodef_contacts_cc iodef_normalize_purpose
+    uuid_random uuid_ns is_uuid
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
@@ -33,8 +34,34 @@ our @EXPORT = qw(
 
 use Iodef::Pb;
 use Module::Pluggable require => 1;
+use OSSP::uuid;
 
 my @plugins = __PACKAGE__->plugins();
+
+sub is_uuid {
+    my $arg = shift;
+    return undef unless($arg && $arg =~ /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    return(1);
+}
+
+sub generate_uuid_random {
+    my $uuid    = OSSP::uuid->new();
+    $uuid->make('v4');
+    my $str = $uuid->export('str');
+    undef $uuid;
+    return($str);
+}
+
+sub generate_uuid_ns {
+    my $source = shift;
+    my $uuid = OSSP::uuid->new();
+    my $uuid_ns = OSSP::uuid->new();
+    $uuid_ns->load('ns::URL');
+    $uuid->make("v3",$uuid_ns,$source);
+    my $str = $uuid->export('str');
+    undef $uuid;
+    return($str);
+}
 
 sub iodef_normalize_restriction {
     my $restriction     = shift || return;
