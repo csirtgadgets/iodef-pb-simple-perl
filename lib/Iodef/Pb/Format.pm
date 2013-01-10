@@ -123,6 +123,8 @@ sub to_keypair {
 
             my $id = $i->get_IncidentID->get_content();
         
+            # TODO -- convert assessment into an if/then block, in case we don't have one?
+            # check to see if IODEF requires it
             my $assessment = @{$i->get_Assessment()}[0];
         
             my $confidence = $assessment->get_Confidence->get_rating();
