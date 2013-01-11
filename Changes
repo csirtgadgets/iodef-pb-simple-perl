@@ -2,6 +2,7 @@ Revision history for Perl extension Iodef::Pb::Simple.
 
 0.16    2013-01-XX
     - added OSSP::uuid as a dep, added uuid_ns, uuid_random and is_uuid functions
+    - added limit output to table.pm
 
 0.15    2013-01-05
     - fixed severity bug in Plugin/Assessment.pm

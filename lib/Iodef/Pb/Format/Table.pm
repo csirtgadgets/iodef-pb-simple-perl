@@ -144,7 +144,8 @@ feed reporttime:    $args->{'reporttime'}
 feed uuid:          $args->{'uuid'}
 feed guid:          $args->{'guid'}
 feed restriction:   $restriction
-feed confidence:    $args->{'confidence'}\n\n";
+feed confidence:    $args->{'confidence'}
+feed limit:         $args->{'limit'}\n\n";
 
     unless($cfg_table_nowarning){
         $meta = 'WARNING: Turn off this warning by adding: \'table_nowarning = 1\' to your ~/.cif config'."\n\n".$meta;
