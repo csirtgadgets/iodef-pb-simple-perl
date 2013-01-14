@@ -138,6 +138,7 @@ sub write_out {
     ## TODO - guid should be responded to by the router
     $args->{'uuid'} = '' unless($args->{'uuid'});
     $args->{'guid'} = '' unless($args->{'guid'});
+    my $limit = $args->{'limit'} || 0;
     
     my $meta = "feed description:   $args->{'description'}
 feed reporttime:    $args->{'reporttime'}
@@ -145,7 +146,7 @@ feed uuid:          $args->{'uuid'}
 feed guid:          $args->{'guid'}
 feed restriction:   $restriction
 feed confidence:    $args->{'confidence'}
-feed limit:         $args->{'limit'}\n\n";
+feed limit:         $limit\n\n";
 
     unless($cfg_table_nowarning){
         $meta = 'WARNING: Turn off this warning by adding: \'table_nowarning = 1\' to your ~/.cif config'."\n\n".$meta;
