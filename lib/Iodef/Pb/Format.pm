@@ -297,6 +297,16 @@ sub to_keypair {
             }
         }
     }
+    
+    if(my $f = $args->{'exclude_assessment'}){
+        $f = lc($f);
+        my @tmp;
+        foreach (@array){
+            next if($_->{'assessment'} eq $f);
+            push(@tmp,$_);
+        }
+        @array = @tmp;
+    }
     ## TODO -- multi column sort?
     if(my $s = $args->{'sortby'}){
         if(uc($args->{'sortby_direction'}) eq 'ASC'){
