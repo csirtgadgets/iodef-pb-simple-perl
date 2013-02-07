@@ -17,7 +17,7 @@ sub process {
                 ContactType->new({
                     ContactName => MLStringType->new({
                         lang    => $data->{'lang'},
-                        content => $data->{'contact'} || 'unkown',
+                        content => $data->{'contact'} || 'unknown',
                     }),
                     Timezone    => $data->{'timezone'},
                     type        => ContactType::ContactType::Contact_type_person(),
