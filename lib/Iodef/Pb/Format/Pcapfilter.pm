@@ -25,7 +25,7 @@ sub write_out {
             $text .= "host $address or ";
         }
     }
-    $text =~ s/ or//;
+    $text =~ s/ or $//;
     return $text;
 }
 1;
