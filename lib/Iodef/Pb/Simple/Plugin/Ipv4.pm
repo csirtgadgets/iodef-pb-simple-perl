@@ -17,6 +17,8 @@ sub process {
     
     my $category = ($addr =~ /^$RE{'net'}{'IPv4'}$/) ? AddressType::AddressCategory::Address_category_ipv4_addr() : AddressType::AddressCategory::Address_category_ipv4_net();
     
+    $addr = normalize_address($addr);
+    
     my @additional_data;
     if($data->{'prefix'} && $data->{'prefix'} =~ /^$RE{'net'}{'CIDR'}{'IPv4'}$/){
         push(@additional_data,ExtensionType->new({
@@ -120,6 +122,17 @@ sub process {
     });
     my $incident = @{$iodef->get_Incident()}[0];
     push(@{$incident->{'EventData'}},$event);
+}
+
+sub normalize_address {
+    my $addr = shift;
+
+    my @bits = split(/\./,$addr);
+    foreach(@bits){
+        next unless(/^0{1,2}/);
+        $_ =~ s/^0{1,2}//;
+    }
+    return join('.',@bits);
 }
 
 1;
