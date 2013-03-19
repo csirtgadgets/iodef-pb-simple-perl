@@ -14,8 +14,9 @@ sub write_out {
 
     my @config_search_path      = ( 'claoverride', $args->{'query'}, 'client' );
     
-    my $cfg_fields              = $args->{'fields'}             || $self->SUPER::confor($config, \@config_search_path, 'fields',             undef);
-    my $cfg_csv_noseperator     = $args->{'csv_noseperator'}    || $self->SUPER::confor($config, \@config_search_path, 'csv_noseperator',    undef);
+    my $cfg_fields              = $args->{'fields'}             || $self->SUPER::confor($config, \@config_search_path, 'fields',            undef);
+    my $cfg_csv_noseperator     = $args->{'csv_noseperator'}    || $self->SUPER::confor($config, \@config_search_path, 'csv_noseperator',   undef);
+    my $cfg_csv_noheader        = $args->{'csv_noheader'}       || $self->SUPER::confor($config, \@config_search_path, 'csv_noheader',      undef);
     
     my @header = keys(%{@{$array}[0]});
     if($cfg_fields){
@@ -44,8 +45,9 @@ sub write_out {
         # the !ref() bits skip things like arrays and hashref's for now...
         $body .= join(',', map { ($a->{$_} && !ref($a->{$_})) ? $a->{$_} : ''} @header)."\n";
     }
-    my $text = '# '.join(',',@header);
-    $text .= "\n".$body;
+    my $text = '';
+    $text = '# '.join(',',@header)."\n" unless($cfg_csv_noheader);
+    $text .= $body;
 
     return $text;
 }

@@ -321,6 +321,7 @@ sub to_keypair {
         my $limit = $args->{'limit'};
         splice(@array,0,($#array-$limit)+1);
     }
+    
     return(\@array); 
 }
 
