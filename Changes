@@ -6,6 +6,7 @@ Revision history for Perl extension Iodef::Pb::Simple.
     - bugfix to pcapfilter output
     - added iptables output
     - bugfix to Ipv4 plugin
+    - added carbon copy support
 
 0.17    2013-01-14
     - misc
