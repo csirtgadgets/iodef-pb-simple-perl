@@ -14,19 +14,23 @@ sub process {
     my $altid = $data->{'AlternativeID'} || $data->{'alternativeid'};
     return unless($altid);
     
+    my $restriction = iodef_normalize_restriction($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private();
+    
     unless(ref($altid) eq 'AlternativeIDType'){
         $altid = AlternativeIDType->new({
-            IncidentID  => IncidentIDType->new({
-                content     => $altid,
-                instance    => '',
-                name        => '',       
-            }),
-            restriction => iodef_normalize_restriction($data->{'alternativeid_restriction'}) || RestrictionType::restriction_type_private(),
+            IncidentID  => [
+                IncidentIDType->new({
+                    content     => $altid,
+                    instance    => '',
+                    name        => '',
+                    restriction => $restriction,
+                }),
+            ],
+            restriction => $restriction
         });
     }
-    
     my $incident = @{$iodef->get_Incident()}[0];
-    push(@{$incident->{'AlternativeID'}},$altid);
+    $incident->set_AlternativeID($altid);
 }
 
 1;
