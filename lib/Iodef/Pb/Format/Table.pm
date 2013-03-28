@@ -136,8 +136,12 @@ sub write_out {
     }
     
     ## TODO - guid should be responded to by the router
-    $args->{'uuid'} = '' unless($args->{'uuid'});
-    $args->{'guid'} = '' unless($args->{'guid'});
+    $args->{'uuid'}         = '' unless($args->{'uuid'});
+    $args->{'guid'}         = '' unless($args->{'guid'});
+    $args->{'description'}  = '' unless($args->{'description'});
+    $args->{'reporttime'}   = '' unless($args->{'reporttime'});
+    $args->{'confidence'}   = '' unless($args->{'confidence'});
+    
     my $limit = $args->{'limit'} || 0;
     
     my $meta = "feed description:   $args->{'description'}
