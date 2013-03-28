@@ -428,12 +428,88 @@ sub new {
         formatid    => '0.01',
         Incident    => [
             IncidentType->new({
-                Description => $args->{'description'},
+                Description => [ $args->{'description'} ],
             }),
         ],
     });
     foreach(@plugins){
         $_->process($args,$pb);
+    }
+    
+    #die ::Dumper($pb);
+    #####
+    $pb = $class->new_carboncopy($pb,$args);
+
+    return $pb;
+}
+
+# i dunno that this belongs here, should be higher up the stack maybe
+# putting here for now till we figure out what to do with it
+sub new_carboncopy {
+    my $class   = shift;
+    my $pb      = shift;
+    my $args    = shift;
+    
+    return $pb unless($args->{'carboncopy'});
+    return $pb if($args->{'carboncopy_nosplit'} && !$args->{'carboncopy_nosplit'});
+   
+    # setup pointer to the original
+    my $orig_obj = @{$pb->get_Incident()}[0];
+    
+    my %local_args                              = %$args;
+    my $restriction                             = $args->{'carboncopy_restriction'} || 'private';
+    $local_args{'restriction'}                  = $restriction;
+    $local_args{'alternativeid_restriction'}    = $restriction;
+    
+    $restriction = iodef_normalize_restriction($restriction) unless($restriction =~ /^\d+$/);
+    
+    my $current_id = @{$pb->get_Incident()}[0]->get_IncidentID();
+    # we need to change the restriction for the altid
+    $current_id = IncidentIDType->new({
+        content     => $current_id->get_content(),
+        name        => $current_id->get_name(),
+        instance    => $current_id->get_instance(),
+        restriction => $restriction,
+    });
+    
+    # setup the array;
+    $pb = [ $pb ];
+
+    my @cc = split(/,/,$args->{'carboncopy'});
+    
+    delete($local_args{'carboncopy'});
+    
+    my @new_ids;
+    foreach (@cc){
+        $local_args{'guid'}         = uuid_ns($_);
+       
+        # create new incident to be pushed into an altid
+        my $new_id = IncidentIDType->new({
+            content     => uuid_random(),
+            restriction => $restriction,
+            name        => uuid_ns($orig_obj->get_IncidentID->get_name()),
+        });
+        
+        $local_args{'IncidentID'} = $new_id;
+        $local_args{'AlternativeID'} = AlternativeIDType->new({
+            restriction => $restriction,
+            IncidentID  => [$current_id],
+        });
+        push(@new_ids, $new_id);
+
+        # create the new incident
+        my $x = $class->new(\%local_args);
+        push(@$pb,$x);
+    }
+    
+    my $orig_altid = $orig_obj->get_AlternativeID();
+    if($orig_altid){
+        push(@{$orig_altid->{'IncidentID'}},@new_ids);
+    } else {
+        $orig_altid = AlternativeIDType->new({
+            IncidentID  => \@new_ids,
+            restriction => $restriction,
+        });   
     }
 
     return $pb;
@@ -454,7 +530,7 @@ Iodef::Pb::Simple - Perl extension providing high level API access to Iodef::Pb.
 
   my $x = Iodef::Pb::Simple->new({
     contact     => 'Wes Young',
-    #address    => 'example.com',
+    address    => 'example.com',
     #rdata      => '1.2.3.4',
     id          => '1234',
     address     => '1.1.1.1',
@@ -484,14 +560,7 @@ None by default. Object Oriented.
 =head1 SEE ALSO
 
  http://github.com/collectiveintel/iodef-pb-simple-perl
- http://github.com/collectiveintel/iodef-pb-perl
- https://github.com/collectiveintel/IODEF
- http://tools.ietf.org/html/rfc5070#section-3.2
- http://search.cpan.org/~gariev/Google-ProtocolBuffers/lib/Google/ProtocolBuffers.pm
- http://code.google.com/p/protobuf/
- http://search.cpan.org/~kasei/Class-Accessor/lib/Class/Accessor.pm
- http://search.cpan.org/~simonw/Module-Pluggable/lib/Module/Pluggable.pm
- http://collectiveintel.net
+ http://collectiveintel.org
 
 =head1 AUTHOR
 
@@ -499,7 +568,7 @@ Wes Young, E<lt>wes@barely3am.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2012 by Wes Young <claimid.com/wesyoung>
+  Copyright (C) 2012 by Wes Young <wesyoung.me>
   Copyright (C) 2012 the REN-ISAC <ren-isac.net>
   Copyright (C) 2012 the trustee's of Indiana University <iu.edu>
 
