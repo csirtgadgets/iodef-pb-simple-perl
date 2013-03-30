@@ -118,8 +118,8 @@ sub to_keypair {
         foreach my $i (@{$doc->get_Incident()}){
             my $detecttime = $i->get_DetectTime();
             my $reporttime = $i->get_ReportTime();
-        
-            my $description = @{$i->get_Description}[0] ->get_content();
+
+            my $description = @{$i->get_Description}[0]->get_content();
 
             my $id = $i->get_IncidentID->get_content();
         
@@ -156,12 +156,9 @@ sub to_keypair {
                 } else {
                     $altid               = $x;
                 }
-                ## TODO -- clean this up
-                $altid_restriction  = $altid->get_restriction() || @{$altid->get_IncidentID}[0]->get_restriction();
+                $altid_restriction  = @{$altid->get_IncidentID}[0]->get_restriction() || $altid->get_restriction() || RestrictionType::restriction_type_private();
                 $altid              = @{$altid->get_IncidentID}[0]->get_content();
-                
             }
-            
             
             # TODO -- only grab the first one for now
             my $relatedid = @{$i->get_RelatedActivity()->get_IncidentID()}[0]->get_content() if($i->get_RelatedActivity());
@@ -188,6 +185,17 @@ sub to_keypair {
                 $guid = $self->get_group_map->{$guid};
             }
             
+            my $carboncopy;
+            my $carboncopy_restriction = 'private';
+            if($#{$i->get_Contact()} > 0){
+                my @tmp;
+                foreach my $contact (@{$i->get_Contact()}){
+                    next unless($contact->get_type == ContactType::ContactRole::Contact_role_cc());
+                    push(@tmp,$contact->get_ContactName->get_content());
+                }
+                $carboncopy = join(',',@tmp);
+            }
+            
             my $hash = {
                 id          => $id,
                 guid        => $guid,
@@ -199,11 +207,12 @@ sub to_keypair {
                 restriction => $restriction,
                 severity    => $severity,
                 purpose     => $purpose,
+                #carboncopy  => $carboncopy,
+                #carboncopy_restriction      => $carboncopy_restriction,
                 alternativeid               => $altid,
                 alternativeid_restriction   => $altid_restriction,
                 relatedid                   => $relatedid,
-            };          
-          
+            };
             if($i->get_EventData()){
                 foreach my $e (@{$i->get_EventData()}){
                     my @flows = (ref($e->get_Flow()) eq 'ARRAY') ? @{$e->get_Flow()} : $e->get_Flow();
@@ -298,6 +307,17 @@ sub to_keypair {
         }
     }
     
+    if(my $new = $args->{'new_only'}){
+        my @tmp;
+        my $now = DateTime->from_epoch(epoch => time());
+        foreach (@array){
+            my $dt = DateTime::Format::DateParse->parse_datetime($_->{'detecttime'});
+            next unless(($dt->ymd().'T'.$dt->hms().'Z') gt ($now->ymd().'T00:00:00Z'));
+            push(@tmp,$_);
+        }
+        @array = @tmp;
+    }
+    
     if(my $f = $args->{'exclude_assessment'}){
         $f = lc($f);
         my @tmp;
@@ -336,6 +356,8 @@ sub confor {
     my $sections    = shift;
     my $name        = shift;
     my $def         = shift;
+    
+    return unless($conf);
 
     # handle
     # snort_foo = 1,2,3
