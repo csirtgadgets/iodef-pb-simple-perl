@@ -207,8 +207,6 @@ sub to_keypair {
                 restriction => $restriction,
                 severity    => $severity,
                 purpose     => $purpose,
-                #carboncopy  => $carboncopy,
-                #carboncopy_restriction      => $carboncopy_restriction,
                 alternativeid               => $altid,
                 alternativeid_restriction   => $altid_restriction,
                 relatedid                   => $relatedid,

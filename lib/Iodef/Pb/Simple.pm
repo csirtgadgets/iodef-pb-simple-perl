@@ -487,7 +487,7 @@ sub new_carboncopy {
         my $new_id = IncidentIDType->new({
             content     => uuid_random(),
             restriction => $restriction,
-            name        => uuid_ns($orig_obj->get_IncidentID->get_name()),
+            name        => $orig_obj->get_IncidentID->get_name(),
         });
         
         $local_args{'IncidentID'} = $new_id;
@@ -511,7 +511,7 @@ sub new_carboncopy {
             restriction => $restriction,
         });   
     }
-
+    
     return $pb;
 }
 
