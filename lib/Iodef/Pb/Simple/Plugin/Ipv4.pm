@@ -129,8 +129,13 @@ sub normalize_address {
 
     my @bits = split(/\./,$addr);
     foreach(@bits){
-        next unless(/^0{1,2}/);
-        $_ =~ s/^0{1,2}//;
+        if(/^0+\/(\d+)$/){
+            $_ = '0/'.$1;
+        } else {
+            next if(/^0$/);
+            next unless(/^0{1,2}/);
+            $_ =~ s/^0{1,2}//;
+        }
     }
     return join('.',@bits);
 }
