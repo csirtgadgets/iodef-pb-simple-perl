@@ -150,7 +150,7 @@ sub to_keypair {
             $purpose = $self->convert_purpose($purpose);
         
             my ($altid,$altid_restriction);
-            if(my $x = $i->get_AlternativeID() || $i->get_RelatedActivity()){
+            if(my $x = $i->get_AlternativeID()){
                 if(ref($x) eq 'ARRAY'){
                     $altid               = @{$x}[0];
                 } else {
