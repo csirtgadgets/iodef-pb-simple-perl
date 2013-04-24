@@ -161,8 +161,12 @@ sub to_keypair {
             }
             
             # TODO -- only grab the first one for now
-            my $relatedid = @{$i->get_RelatedActivity()->get_IncidentID()}[0]->get_content() if($i->get_RelatedActivity());
-           
+            my ($relatedid,$relatedid_restriction);
+            if($i->get_RelatedActivity()){
+                $relatedid = @{$i->get_RelatedActivity()->get_IncidentID()}[0]->get_content();
+                $relatedid_restriction  = @{$i->get_RelatedActivity()->get_IncidentID()}[0]->get_restriction();
+            }
+            
             my $guid;
             if(my $iad = $i->get_AdditionalData()){
                 foreach (@$iad){
@@ -170,14 +174,19 @@ sub to_keypair {
                     $guid = $_->get_content();
                 }
             }
-            $restriction        = $self->convert_restriction($restriction);
-            $altid_restriction   = $self->convert_restriction($altid_restriction);
+            $restriction            = $self->convert_restriction($restriction);
+            $altid_restriction      = $self->convert_restriction($altid_restriction);
+            $relatedid_restriction  = $self->convert_restriction($relatedid_restriction);
+            
             if(my $map = $self->get_restriction_map()){
                 if(my $r = $map->{$restriction}){
                     $restriction = $r;
                 }
                 if($altid_restriction && (my $r = $map->{$altid_restriction})){
                     $altid_restriction = $r;
+                }
+                if($relatedid_restriction && (my $r = $map->{$relatedid_restriction})){
+                    $relatedid_restriction = $r;
                 }
             }
 
@@ -210,6 +219,7 @@ sub to_keypair {
                 alternativeid               => $altid,
                 alternativeid_restriction   => $altid_restriction,
                 relatedid                   => $relatedid,
+                relatedid_restriction       => $relatedid_restriction,
             };
             if($i->get_EventData()){
                 foreach my $e (@{$i->get_EventData()}){
