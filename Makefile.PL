@@ -22,4 +22,8 @@ requires    'Digest::SHA'                   => '5.40';
 requires    'Text::Table'                   => '1.126';
 requires    'OSSP::uuid'                    => '1.0602';
 
+homepage    'https://github.com/collectiveintel/iodef-pb-simple-perl';
+bugtracker  'https://github.com/collectiveintel/iodef-pb-simple-perl/issues';
+repository  'https://github.com/collectiveintel/iodef-pb-simple-perl.git';
+
 WriteAll();
