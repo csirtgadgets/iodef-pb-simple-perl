@@ -10,28 +10,15 @@ To install this module type the following:
    make test
    make install
 
-DEPENDENCIES
-
-This module requires these other modules and libraries:
-
-   Iodef::Pb
-
 SEE ALSO
 
-   http://github.com/collectiveintel/iodef-pb-simple-perl
-   http://github.com/collectiveintel/iodef-pb-perl
-   https://github.com/collectiveintel/IODEF
-   http://tools.ietf.org/html/rfc5070#section-3.2
-   http://search.cpan.org/~gariev/Google-ProtocolBuffers/lib/Google/ProtocolBuffers.pm
-   http://code.google.com/p/protobuf/
-   http://search.cpan.org/~kasei/Class-Accessor/lib/Class/Accessor.pm
-   http://collectiveintel.net
+   github.com/collectiveintel/iodef-pb-simple-perl
+   collectiveintel.org
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2012 by Wes Young <claimid.com/wesyoung>
-Copyright (C) 2012 by the REN-ISAC <ren-isac.net>
-Copyright (C) 2012 by the Trustee's of Indiana University <iu.edu>
+Copyright (C) 2013 by Wes Young <wesyoung.me>
+Copyright (C) 2013 by the REN-ISAC <ren-isac.net>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,

@@ -140,7 +140,7 @@ sub write_out {
     $args->{'guid'}         = '' unless($args->{'guid'});
     $args->{'description'}  = '' unless($args->{'description'});
     $args->{'reporttime'}   = '' unless($args->{'reporttime'});
-    $args->{'confidence'}   = '' unless($args->{'confidence'});
+    $args->{'confidence'}   = 0 unless($args->{'confidence'});
     
     my $limit = $args->{'limit'} || 0;
     

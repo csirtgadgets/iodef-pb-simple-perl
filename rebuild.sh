@@ -1,5 +1,7 @@
 make realclean
 rm MANIFEST
+rm META.*
+RM MYMETA.*
 rm *.tar.gz
 perl generate_bindings.pl
 perl Makefile.PL
