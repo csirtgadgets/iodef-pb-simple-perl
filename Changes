@@ -1,6 +1,6 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.18     2013-05
+0.18     2013-05-02
     - added exclude_assessment option
     - [jeff] spelling error in contacts mod
     - bugfix to pcapfilter output
