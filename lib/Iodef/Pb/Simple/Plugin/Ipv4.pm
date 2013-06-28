@@ -13,6 +13,9 @@ sub process {
     my $iodef = shift;
     
     my $addr = $data->{'address'};
+    my $mask = $data->{'address_mask'} || 32; # 32 seems easier than 0 or undef
+    $addr = $addr.'/'.$mask if($mask < 32);
+    
     return unless($addr && ($addr =~ /^$RE{'net'}{'IPv4'}$/ || $addr =~ /^$RE{'net'}{'CIDR'}{'IPv4'}$/));
     
     my $category = ($addr =~ /^$RE{'net'}{'IPv4'}$/) ? AddressType::AddressCategory::Address_category_ipv4_addr() : AddressType::AddressCategory::Address_category_ipv4_net();

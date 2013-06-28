@@ -1,5 +1,8 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
+0.19    2013-07
+    - added "address_mask" as a keyword, the ipv4 plugin handles
+
 0.18     2013-05-02
     - added exclude_assessment option
     - [jeff] spelling error in contacts mod
