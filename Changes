@@ -1,6 +1,6 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.19    2013-07
+0.19    2013-07-09
     - added "address_mask" as a keyword, the ipv4 plugin handles
 
 0.18     2013-05-02
