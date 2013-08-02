@@ -412,7 +412,7 @@ sub new {
     $args->{'description'}  = 'unknown'     unless($args->{'description'});
     $args->{'lang'}         = 'EN'          unless($args->{'lang'});
     $args->{'timezone'}     = 'UTC'         unless($args->{'timezone'});
-
+    
     unless(ref($args->{'description'}) eq 'MLStringType'){
         $args->{'description'} = MLStringType->new({
             lang    => $args->{'lang'},

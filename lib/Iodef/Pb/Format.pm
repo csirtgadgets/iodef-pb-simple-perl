@@ -112,7 +112,7 @@ sub to_keypair {
     if(ref($data) eq 'IODEFDocumentType'){
         $data = [$data];
     }
-
+    
     foreach my $doc (@$data){
         next unless(ref($doc) eq 'IODEFDocumentType');
         foreach my $i (@{$doc->get_Incident()}){
@@ -168,12 +168,19 @@ sub to_keypair {
             }
             
             my $guid;
+            my %additional_data;
             if(my $iad = $i->get_AdditionalData()){
+                my $i = 1;
                 foreach (@$iad){
-                    next unless($_->get_meaning() =~ /^guid/);
-                    $guid = $_->get_content();
+                    if($_->get_meaning() =~ /^guid/){
+                        $guid = $_->get_content();
+                    } else {
+                        my ($ad,$meaning) = ($_->get_content(),$_->get_meaning());
+                        $additional_data{$i++} = { data => $ad, meaning => $meaning };
+                    }
                 }
             }
+            
             $restriction            = $self->convert_restriction($restriction);
             $altid_restriction      = $self->convert_restriction($altid_restriction);
             $relatedid_restriction  = $self->convert_restriction($relatedid_restriction);
@@ -221,6 +228,15 @@ sub to_keypair {
                 relatedid                   => $relatedid,
                 relatedid_restriction       => $relatedid_restriction,
             };
+            if(keys %additional_data){
+                foreach my $k (keys %additional_data){
+                    my $kk = 'additional_data'.$k;
+                    $hash->{"$kk"} = $additional_data{$k}->{'data'};
+                    $hash->{$kk.'_meaning'} = $additional_data{$k}->{'meaning'};
+                }
+                
+            }
+            die ::Dumper($hash);
             if($i->get_EventData()){
                 foreach my $e (@{$i->get_EventData()}){
                     my @flows = (ref($e->get_Flow()) eq 'ARRAY') ? @{$e->get_Flow()} : $e->get_Flow();
