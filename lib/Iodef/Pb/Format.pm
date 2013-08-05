@@ -236,7 +236,6 @@ sub to_keypair {
                 }
                 
             }
-            die ::Dumper($hash);
             if($i->get_EventData()){
                 foreach my $e (@{$i->get_EventData()}){
                     my @flows = (ref($e->get_Flow()) eq 'ARRAY') ? @{$e->get_Flow()} : $e->get_Flow();
