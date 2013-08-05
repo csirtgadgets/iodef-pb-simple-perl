@@ -42,7 +42,7 @@ sub normalize_address {
 
     my @bits = split(/\./,$addr);
     foreach(@bits){
-        next unless(/^0{1,2}/);
+        next unless(/^0{1,2}[1-9]{1,2}/);
         $_ =~ s/^0{1,2}//;
     }
     return join('.',@bits);

@@ -2,6 +2,7 @@ Revision history for Perl extension Iodef::Pb::Simple.
 
 0.20    2013-08
     - added ability to map 'additional_data1,additional_data1_meaning,additional_data2,addititonal_data2_meaning'
+    - fixed #40 (iptables output)
 
 0.19    2013-07-09
     - added "address_mask" as a keyword, the ipv4 plugin handles
