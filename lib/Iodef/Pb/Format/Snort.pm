@@ -42,9 +42,11 @@ sub write_out {
         my $portlist = ($_->{'portlist'}) ? $_->{'portlist'} : 'any';       
 
         my $priority = 1;
-        for(lc($_->{'severity'})){
-            $priority = 5 if(/medium/);
-            $priority = 9 if(/high/);
+        if($_->{'severity'}){
+            for(lc($_->{'severity'})){
+                $priority = 5 if(/medium/);
+                $priority = 9 if(/high/);
+            }
         }
 
         my $dstnet      = 'any';
