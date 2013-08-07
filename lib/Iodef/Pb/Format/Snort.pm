@@ -81,8 +81,9 @@ sub write_out {
                 next;
             }
         }
+        my $action = ($_->{'assessment'} eq 'whitelist') ? 'pass' : 'alert';
         my $r = Snort::Rule->new(
-            -action => 'alert',
+            -action => $action,
             -proto  => translate_proto($_->{'protocol'}),
             -src    => $srcnet,
             -sport  => join(',', (($srcport =~ /^[,\-\d]+$/) ? parse_range($srcport) : $srcport)),
