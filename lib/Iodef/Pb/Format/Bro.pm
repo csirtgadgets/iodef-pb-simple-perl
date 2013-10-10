@@ -23,7 +23,7 @@ sub write_out {
     # this is just as example...
     # my $cfg_option = $args->{'bro_option'} || $self->SUPER::confor($config, \@config_search_path, 'bro_option',        undef);
 
-    my $result = "#fields\thost\tnet\tstr\tstr_type\tmeta.source\tmeta.desc\tmeta.url\tmeta.cif_impact\tmeta.cif_severity\tmeta.cif_confidence\n";
+    my $result = "#fields\tindicator\tindicator_type\tmeta.source\tmeta.desc\tmeta.url\tmeta.cif_impact\tmeta.cif_severity\tmeta.cif_confidence\n";
     foreach my $a (@$array){
         next unless($a->{'address'});
         
@@ -48,15 +48,17 @@ sub write_out {
             elsif($a->{'address'} =~ m/$RE{net}{CIDR}{IPv4}/){$net = $a->{'address'};}
             elsif($a->{'address'} =~ m/$RE{net}{IPv4}/){$ip = $a->{'address'};}
 
-            # host    net    str   str_type                                                                                                                                                                                                                                     
+            # indicator    indicator_type    str   str_type                                                                                                                                                                                             
 
-            if($domain){ $result .= "-\t-\t".$domain."\tIntel::DOMAIN\t"; }
-            if($url){    $result .= "-\t-\t".$url."\tIntel::URL\t"; }
-            if($ip){     $result .= $ip."\t-\t-\t-\t"; }
-            if($net){    $result .= "-\t".$net."\t-\t-\t"; }
+            if($domain){ $result .= $domain."\tIntel::DOMAIN\t"; }
+            if($url){    $result .= $url."\tIntel::URL\t"; }
+            if($ip){     $result .= $ip."\tIntel::ADDR\t"; }
+            # TODO: Intel Framework does not support net address type.  Yet.
+            #if($net){    $result .= $net."\t-\t"; }
         }
-
-        if($ip or $net or $domain or $url) {
+        
+        # TODO : Intel Framework does not support net address type.  Yet.
+        if($ip or $domain or $url) {                
             $result .= "CIF - ";
             if(exists($a->{'restriction'}) and $a->{'restriction'}) { $result .= $a->{'restriction'}."\t"; }
             else { $result .= "Unknown\t"; }
