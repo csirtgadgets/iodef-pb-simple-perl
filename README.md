@@ -13,12 +13,6 @@ To install this module type the following:
    make test
    make install
 
-SEE ALSO
-==
-
-   github.com/collectiveintel/iodef-pb-simple-perl
-   collectiveintel.org
-
 COPYRIGHT AND LICENCE
 ==
 Copyright (C) 2013 by Wes Young <wesyoung.me>
