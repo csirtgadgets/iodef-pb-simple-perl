@@ -3,6 +3,7 @@ before_install:
     - sudo apt-get update -qq
     - sudo apt-get install libossp-uuid16 libossp-uuid-dev libossp-uuid-perl
     - sudo ldconfig
+    - perl -MOSSP::uuid -e 'print $OSSP::uuid::VERSION'
 perl:
   - "5.12"
 notifications:
