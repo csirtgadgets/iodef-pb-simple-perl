@@ -1,7 +1,7 @@
 language: perl
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq libossp-uuid-dev libossp-uuid-perl
+    - sudo apt-get install libossp-uuid16 libossp-uuid-dev libossp-uuid-perl
 perl:
   - "5.16"
   - "5.14"
