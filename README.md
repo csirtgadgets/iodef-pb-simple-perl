@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/csirtgadgets/iodef-pb-simple-perl.png?branch=master)](https://travis-ci.org/csirtgadgets/iodef-pb-simple-perl)
-
 Iodef-Pb-Simple
 ==
 
