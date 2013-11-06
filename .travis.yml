@@ -4,6 +4,7 @@ before_install:
     - sudo apt-get install libossp-uuid16 libossp-uuid-dev libossp-uuid-perl
     - sudo ldconfig
     - perl -MOSSP::uuid -e 'print $OSSP::uuid::VERSION'
+env: export PERL5LIB=/usr/lib/perl5:$PERL5LIB
 perl:
   - "5.12"
 notifications:
