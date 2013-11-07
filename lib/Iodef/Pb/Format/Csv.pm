@@ -17,9 +17,7 @@ sub write_out {
     my $cfg_fields              = $args->{'fields'}             || $self->SUPER::confor($config, \@config_search_path, 'fields',            undef);
     my $cfg_csv_noseperator     = $args->{'csv_noseperator'}    || $self->SUPER::confor($config, \@config_search_path, 'csv_noseperator',   undef);
     my $cfg_csv_noheader        = $args->{'csv_noheader'}       || $self->SUPER::confor($config, \@config_search_path, 'csv_noheader',      undef);
-    my $cfg_suppress_blanks     = $args->{'suppress_blanks'}    || $self->SUPER::confor($config, \@config_search_path, 'suppress_blanks',   undef);
-    my $cfg_unique_only         = $args->{'unique_only'}        || $self->SUPER::confor($config, \@config_search_path, 'unique_only',       undef);
-
+    
     my @header = keys(%{@{$array}[0]});
     if($cfg_fields){
         @header = @$cfg_fields;
@@ -27,8 +25,6 @@ sub write_out {
 
     @header = sort { $a cmp $b } @header;
     my $body = '';
-    my %bodyhash;
-    my @bodyarray;
     foreach my $a (@$array){
         delete($a->{'message'}); 
         # there's no clean way to do this just yet
@@ -46,26 +42,12 @@ sub write_out {
                 $a->{$_} =~ tr/\000-\177//cd;
             }
         }
-
         # the !ref() bits skip things like arrays and hashref's for now...
-	my $tmp = join(',', map { ($a->{$_} && !ref($a->{$_})) ? $a->{$_} : ''} @header); 
-
-	# If we're suppressing blank entries we need to use the tmp variable because we want look at the result of the join
-	next if ( $cfg_suppress_blanks && $tmp =~ /^[\s,]*$/ );
-
-	if ( $cfg_unique_only ) {
-	    $bodyhash{$tmp} = '';
-	} else {
-	    push @bodyarray, $tmp;
-	}
+        $body .= join(',', map { ($a->{$_} && !ref($a->{$_})) ? $a->{$_} : ''} @header)."\n";
     }
-    if ( $cfg_unique_only ) {
-	@bodyarray = keys(%bodyhash);
-    }
-
     my $text = '';
     $text = '# '.join(',',@header)."\n" unless($cfg_csv_noheader);
-    $text .= join("\n",@bodyarray)."\n";
+    $text .= $body;
 
     return $text;
 }
