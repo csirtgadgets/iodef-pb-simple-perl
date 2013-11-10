@@ -6,9 +6,10 @@ use Google::ProtocolBuffers;
 my $f = './protocol/defs/iodef.proto';
 Google::ProtocolBuffers->parsefile($f,
     {
-        generate_code => 'lib/Iodef/Pb.pm',
-        create_accessors    => 1,
-        follow_best_practice => 1,
+        generate_code           => 'lib/Iodef/Pb.pm',
+        create_accessors        => 1,
+        follow_best_practice    => 1,
+        no_timestamp            => 1,
     }
 );
 
