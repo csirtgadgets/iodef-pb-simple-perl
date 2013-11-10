@@ -1,15 +1,16 @@
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl Iodef-Pb-Simple.t'
-
-#########################
-
-# change 'tests => 1' to 'tests => last_test_to_print';
-
-use Test::More tests => 1;
+use Test::More;
 BEGIN { use_ok('Iodef::Pb::Simple') };
 
-#########################
+use UUID::Tiny ':std';
+use Iodef::Pb::Simple qw/uuid_ns uuid_random/;
 
-# Insert your test code below, the Test::More module is use()ed here so read
-# its man page ( perldoc Test::More ) for help writing this test script.
+ok(create_uuid_as_string(UUID_RANDOM));
+ok(create_uuid_as_string(UUID_V3, UUID_NIL, 'everyone') eq '8c864306-d21a-37b1-8705-746a786719bf');
+ok(create_uuid_as_string(UUID_V3, UUID_NIL, 'root') eq '1893558f-9371-3bcd-9369-aa4942339231');
 
+ok(uuid_random() ne uuid_random());
+ok(uuid_ns('everyone') eq '8c864306-d21a-37b1-8705-746a786719bf');
+ok(uuid_ns('root') eq '1893558f-9371-3bcd-9369-aa4942339231');
+ok(uuid_ns('p1.example.com') eq '13805ea4-fe04-3ac6-9339-40ad396b6d41');
+
+done_testing();

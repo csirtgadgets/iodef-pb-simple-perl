@@ -1,7 +1,10 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
 0.21    2013-10
-    - [klehigh] fixed bro output: https://github.com/csirtgadgets/iodef-pb-simple-perl/issues/6
+    bugfixes:
+        - [klehigh] fixed bro output: https://github.com/csirtgadgets/iodef-pb-simple-perl/issues/6
+        - removed OSSP::uuid dep, swapped out for UUID::Tiny
+        - added stronger testing
 
 0.20    2013-08-29
     - added ability to map 'additional_data1,additional_data1_meaning,additional_data2,addititonal_data2_meaning'

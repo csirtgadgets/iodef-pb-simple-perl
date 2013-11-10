@@ -34,7 +34,7 @@ our @EXPORT = qw(
 
 use Iodef::Pb;
 use Module::Pluggable require => 1;
-use OSSP::uuid;
+use UUID::Tiny ':std';
 
 my @plugins = __PACKAGE__->plugins();
 
@@ -45,22 +45,12 @@ sub is_uuid {
 }
 
 sub uuid_random {
-    my $uuid    = OSSP::uuid->new();
-    $uuid->make('v4');
-    my $str = $uuid->export('str');
-    undef $uuid;
-    return($str);
+    return create_uuid_as_string(UUID_RANDOM);
 }
 
 sub uuid_ns {
-    my $source = shift;
-    my $uuid = OSSP::uuid->new();
-    my $uuid_ns = OSSP::uuid->new();
-    $uuid_ns->load('ns::URL');
-    $uuid->make("v3",$uuid_ns,$source);
-    my $str = $uuid->export('str');
-    undef $uuid;
-    return($str);
+    my $arg = shift;
+    return create_uuid_as_string(UUID_V3, UUID_NIL, $arg);
 }
 
 sub iodef_normalize_restriction {

@@ -20,7 +20,6 @@ requires    'MIME::Base64'                  => '0.08';
 requires    'HTML::Table'                   => '2.08';
 requires    'Digest::SHA'                   => '5.40';
 requires    'Text::Table'                   => '1.126';
-requires    'OSSP::uuid'                    => '1.0602';
 
 homepage    'https://github.com/collectiveintel/iodef-pb-simple-perl';
 bugtracker  'https://github.com/collectiveintel/iodef-pb-simple-perl/issues';
