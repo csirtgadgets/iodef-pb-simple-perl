@@ -1,6 +1,6 @@
 Revision history for Perl extension Iodef::Pb::Simple.
 
-0.21    2013-11
+0.21    2013-11-19
     - fixes:
         - [klehigh]     fixed bro output
                         https://github.com/csirtgadgets/iodef-pb-simple-perl/issues/6
