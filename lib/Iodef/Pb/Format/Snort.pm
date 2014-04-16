@@ -94,7 +94,7 @@ sub write_out {
 
         my $reference = make_snort_ref($_->{'alternativeid'});
 
-        $r->opts('msg',$msg_prefix . $_->{'restriction'}.' - '.$_->{'assessment'}.' '.$_->{'description'});
+        $r->opts('msg',$msg_prefix . $_->{'restriction'}.' - '.$_->{'assessment'}.' '.escape_content($_->{'description'}));
         $r->opts('threshold', $thresh) if $thresh;
         $r->opts('tag', $tag) if $tag;
         $r->opts('classtype', $classtype) if $classtype;
@@ -226,10 +226,12 @@ sub make_snort_ref {
 #Note:  
 #Also note that the following characters must be escaped inside a content rule:
 #
-#    ; \ "
+#    ; \ " 
+#    also | -> |7c|
     
 sub escape_content {
     my $x = shift;
+    $x =~ s/\|/\|7c\|/gi;
     $x =~ s/\\/\\\\/gi;
     $x =~ s/;/\\;/gi;
     $x =~ s/\"/\\"/gi;
