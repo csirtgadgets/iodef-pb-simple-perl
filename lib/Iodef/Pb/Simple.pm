@@ -196,19 +196,27 @@ sub iodef_assessments {
 
 sub iodef_impacts {
     my $iodef = shift;
-    
+
     if(ref($iodef) eq 'IODEFDocumentType'){
         $iodef = $iodef->get_Incident();
     };
     $iodef = [$iodef] unless(ref($iodef) eq 'ARRAY');
-    
+
     my $array;
     foreach my $i (@$iodef){
-        my @local = @{$i->get_Assessment()};
+        my @local;
+        if($i->get_Assessment()){
+            @local = @{$i->get_Assessment()};
+        } else {
+            use Data::Dumper;
+            warn Dumper($i);
+            push(@local, 'unknown');
+        }
         push(@$array, map { @{$_->get_Impact()} } @local);
     }
     return $array;
 }
+
 
 sub iodef_impacts_first {
     my $iodef = shift;
